@@ -2,7 +2,7 @@ import React from 'react'
 
 function Documentacion() {
   return (
-    <div>Documentacion</div>
+    <div className='mx-auto text-center'>Documentación de Swagger API próximamente...</div>
   )
 }
 

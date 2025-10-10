@@ -8,6 +8,8 @@ import VentasList from './pages/Ventas/VentasList';
 import ReportesList from './pages/Reportes/ReportesList';
 import Documentacion from './pages/Documentacion/Documentacion';
 import ErrorPage from './pages/Error/ErrorPage';
+import ProductoDetalle from './pages/Inventario/ProductoDetalle';
+import UsuarioDetalle from './pages/Usuarios/UsuarioDetalle';
 
 const router = createBrowserRouter([
   {
@@ -16,8 +18,18 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { index: true, Component: Home },
-      { path: 'productos', Component: ProductosList},
-      { path: 'usuarios', Component: UsuariosList},
+      { path: 'productos',
+        children: [
+          { index : true, Component: ProductosList },
+          { path: ':productoId', Component: ProductoDetalle }
+        ]
+      },
+      { path: 'usuarios', 
+        children: [
+          { index: true, Component: UsuariosList },
+          { path: ':usuarioId', Component: UsuarioDetalle }
+        ]
+      },
       { path: 'ventas', Component: VentasList},
       { path: 'reportes', Component: ReportesList},
       { path: 'documentacion', Component: Documentacion},

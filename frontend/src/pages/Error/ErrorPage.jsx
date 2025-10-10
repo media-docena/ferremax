@@ -51,28 +51,29 @@ export default function ErrorPage() {
   };
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4 relative overflow-hidden'>
-      {/* Fondo decorativo con blobs animados */}
+    <div className='min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4 md:p-12 relative overflow-hidden'>
+      {/* Fondo decorativo con blobs animados*/}
       <div className='absolute inset-0 overflow-hidden pointer-events-none'>
-        <div className='absolute top-20 left-10 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse'></div>
+        <div className='absolute top-20 left-10 w-72 h-72 md:w-96 md:h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse'></div>
         <div
-          className='absolute top-40 right-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse'
+          className='absolute top-40 right-10 w-72 h-72 md:w-96 md:h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse'
           style={{ animationDelay: '2s' }}
         ></div>
         <div
-          className='absolute bottom-20 left-1/2 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse'
+          className='absolute bottom-20 left-1/2 w-72 h-72 md:w-96 md:h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse'
           style={{ animationDelay: '4s' }}
         ></div>
       </div>
 
       {/* Contenido principal */}
-      <div className='relative z-10 max-w-md w-full'>
-        <div className='bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-2xl p-8 md:p-12'>
+      <div className='relative z-10 max-w-md md:max-w-3xl lg:max-w-4xl w-full'>
+        {/* Contenedor de Error */}
+        <div className='bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-2xl p-8 md:p-16 lg:p-20'>
           {/* Icono de error */}
           <div className='flex justify-center mb-6'>
-            <div className='p-4 bg-gradient-to-br from-red-500 to-orange-500 rounded-full shadow-lg'>
+            <div className='p-4 md:p-6 bg-gradient-to-br from-red-500 to-orange-500 rounded-full shadow-lg'>
               <svg
-                className='w-12 h-12 text-white'
+                className='w-12 h-12 md:w-16 md:h-16 text-white' // Icono más grande en desktop
                 fill='none'
                 stroke='currentColor'
                 viewBox='0 0 24 24'
@@ -89,36 +90,36 @@ export default function ErrorPage() {
 
           {/* Status code */}
           <div className='text-center mb-6'>
-            <p className='text-6xl md:text-7xl font-black bg-gradient-to-r from-red-400 via-orange-400 to-pink-400 bg-clip-text text-transparent'>
+            <p className='text-6xl md:text-8xl lg:text-9xl font-black bg-gradient-to-r from-red-400 via-orange-400 to-pink-400 bg-clip-text text-transparent'>
               {errorConfig.statusDisplay}
             </p>
           </div>
 
           {/* Título */}
-          <h1 className='text-3xl md:text-4xl font-bold text-white text-center mb-4'>
+          <h1 className='text-3xl md:text-5xl lg:text-6xl font-bold text-white text-center mb-4'>
             {errorConfig.title}
           </h1>
 
           {/* Descripción */}
-          <p className='text-gray-300 text-center mb-8 text-lg leading-relaxed'>
+          <p className='text-gray-300 text-center mb-8 md:mb-10 text-lg md:text-xl leading-relaxed'>
             {errorConfig.description}
           </p>
 
           {/* Mensaje de error técnico (si aplica) */}
           {message && message !== 'unknown' && (
-            <div className='bg-red-500/20 border border-red-500/50 rounded-lg p-4 mb-8'>
-              <p className='text-red-200 text-sm font-mono break-words'>
+            <div className='bg-red-500/20 border border-red-500/50 rounded-lg p-4 md:p-6 mb-8 md:mb-10'>
+              <p className='text-red-200 text-sm md:text-base font-mono break-words'>
                 {message}
               </p>
             </div>
           )}
 
-          {/* Botones de acción */}
-          <div className='space-y-3'>
+          {/* Botones de acción*/}
+          <div className='flex flex-col gap-3 md:flex-row md:justify-center md:gap-4'>
             {/* Botón volver atrás */}
             <button
               onClick={handleGoBack}
-              className='w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg'
+              className='w-full md:w-auto flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg whitespace-nowrap'
             >
               <svg
                 className='w-5 h-5'
@@ -139,7 +140,7 @@ export default function ErrorPage() {
             {/* Botón ir al inicio */}
             <Link
               to='/'
-              className='w-full flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg no-underline'
+              className='w-full md:w-auto flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg no-underline whitespace-nowrap'
             >
               <svg
                 className='w-5 h-5'
@@ -160,7 +161,7 @@ export default function ErrorPage() {
             {/* Botón ir a productos */}
             <Link
               to='/productos'
-              className='w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg no-underline'
+              className='w-full md:w-auto flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg no-underline whitespace-nowrap'
             >
               <svg
                 className='w-5 h-5'
@@ -177,34 +178,34 @@ export default function ErrorPage() {
               </svg>
               Ver productos
             </Link>
-
-            {/* Botón cerrar sesión - solo si no es 404 */}
-            {status !== 404 && (
-              <button
-                onClick={handleLogout}
-                className='w-full flex items-center justify-center gap-2 bg-red-500/20 border border-red-500 hover:bg-red-500/30 text-red-300 hover:text-red-200 font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg'
-              >
-                <svg
-                  className='w-5 h-5'
-                  fill='none'
-                  stroke='currentColor'
-                  viewBox='0 0 24 24'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1'
-                  />
-                </svg>
-                Cerrar sesión
-              </button>
-            )}
           </div>
+
+          {/* Botón cerrar sesión */}
+          {status !== 404 && (
+            <button
+              onClick={handleLogout}
+              className='mt-3 md:mt-4 w-full md:w-auto flex items-center justify-center gap-2 bg-red-500/20 border border-red-500 hover:bg-red-500/30 text-red-300 hover:text-red-200 font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg md:mx-auto' // Centrado en desktop
+            >
+              <svg
+                className='w-5 h-5'
+                fill='none'
+                stroke='currentColor'
+                viewBox='0 0 24 24'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth={2}
+                  d='M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1'
+                />
+              </svg>
+              Cerrar sesión
+            </button>
+          )}
 
           {/* Footer informativo */}
           <div className='mt-8 pt-6 border-t border-white/10'>
-            <p className='text-gray-400 text-xs text-center'>
+            <p className='text-gray-400 text-xs md:text-sm text-center'>
               Si el problema persiste, por favor contacta al equipo de soporte
             </p>
           </div>
