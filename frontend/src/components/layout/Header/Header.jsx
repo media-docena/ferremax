@@ -12,7 +12,7 @@ import LogoutIcon from '../../../assets/icons/logout.svg?react';
 import PersonIcon from '../../../assets/icons/person.svg?react';
 import ArrowDropDownIcon from '../../../assets/icons/arrow_drop_down.svg?react';
 
-function Header({ userName, userRole, onLogout, activeItem }) {
+function Header({ userName, userRole, onLogout }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const navigationItems = [
@@ -20,37 +20,37 @@ function Header({ userName, userRole, onLogout, activeItem }) {
       id: 'home',
       label: 'HOME',
       icon: <HomeIcon />,
-      href: '#',
+      href: '',
     },
     {
       id: 'users',
       label: 'USUARIOS',
       icon: <GroupIcon />,
-      href: '#',
+      href: 'usuarios',
     },
     {
       id: 'inventory',
       label: 'INVENTARIO',
       icon: <InventoryIcon />,
-      href: '#',
+      href: 'productos',
     },
     {
       id: 'sales',
       label: 'VENTAS',
       icon: <ShoppingCartIcon />,
-      href: '#',
+      href: 'ventas',
     },
     {
       id: 'reports',
       label: 'REPORTES',
       icon: <BarChartIcon />,
-      href: '#',
+      href: 'reportes',
     },
     {
       id: 'documentation',
       label: 'DOCUMENTACIÓN',
       icon: <DescriptionIcon />,
-      href: '#',
+      href: 'documentacion',
     },
   ];
 
@@ -106,7 +106,7 @@ function Header({ userName, userRole, onLogout, activeItem }) {
             </div>
         {/* Navigation Bar */}
         <div className='bg-white shadow-md'>
-          <Navbar navigationItems={navigationItems} activeItem={activeItem} />
+          <Navbar navigationItems={navigationItems} />
         </div>
       </header>
     </div>
