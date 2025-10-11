@@ -85,9 +85,10 @@ function ProductoDetalle() {
               label='Unidad del Producto'
               value={productData.unit}
             />
-            <DetailFieldTitle label='Estado' statusBadge={
-            <StatusBadge status={productData.status} />
-            } />
+            <DetailFieldTitle
+              label='Estado'
+              statusBadge={<StatusBadge status={productData.status} />}
+            />
             <DetailFieldTitle
               label='Fecha de Creación'
               value={productData.createdDate}
@@ -112,6 +113,7 @@ function ProductoDetalle() {
             label='Editar'
             icon={<EditIcon />}
             variant='info'
+            to={`/productos/${productData.id}/editar`}
             onClick={() => console.log('Editar')}
           />
         </div>
