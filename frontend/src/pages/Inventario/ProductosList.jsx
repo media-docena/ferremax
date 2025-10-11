@@ -142,6 +142,7 @@ function ProductosList() {
               label='Nuevo Producto'
               icon={<AddIcon />}
               variant='warning'
+              to='/productos/crear'
               onClick={() => console.log('Nuevo producto')}
             />
           </div>
@@ -226,9 +227,8 @@ function ProductosList() {
                   {/* Action Buttons Column */}
                   <td className='p-4 flex justify-center items-center space-x-2'>
                     <ActionIconButton icon={<VisibilityIcon />} variant='info' to={product.id} />
-                    <button className='text-gray-500 hover:text-yellow-500'>
-                      <EditIcon />
-                    </button>
+                    <ActionIconButton icon={<EditIcon />} variant='warning' to={`${product.id}/editar`} />
+    
                     {product.status === 'Inactivo' ? (
                       <button className='text-gray-500 hover:text-green-500'>
                         <ArrowUpwardIcon />

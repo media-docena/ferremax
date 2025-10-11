@@ -10,6 +10,8 @@ import Documentacion from './pages/Documentacion/Documentacion';
 import ErrorPage from './pages/Error/ErrorPage';
 import ProductoDetalle from './pages/Inventario/ProductoDetalle';
 import UsuarioDetalle from './pages/Usuarios/UsuarioDetalle';
+import ProductoEditar from './pages/Inventario/ProductoEditar';
+import ProductoCrear from './pages/Inventario/ProductoCrear';
 
 const router = createBrowserRouter([
   {
@@ -18,21 +20,30 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { index: true, Component: Home },
-      { path: 'productos',
+      {
+        path: 'productos',
         children: [
-          { index : true, Component: ProductosList },
-          { path: ':productoId', Component: ProductoDetalle }
-        ]
+          { index: true, Component: ProductosList },
+          { path: 'crear', Component: ProductoCrear },
+          {
+            path: ':productoId',
+            children: [
+              { index: true, Component: ProductoDetalle },
+              { path: 'editar', Component: ProductoEditar },
+            ],
+          },
+        ],
       },
-      { path: 'usuarios', 
+      {
+        path: 'usuarios',
         children: [
           { index: true, Component: UsuariosList },
-          { path: ':usuarioId', Component: UsuarioDetalle }
-        ]
+          { path: ':usuarioId', Component: UsuarioDetalle },
+        ],
       },
-      { path: 'ventas', Component: VentasList},
-      { path: 'reportes', Component: ReportesList},
-      { path: 'documentacion', Component: Documentacion},
+      { path: 'ventas', Component: VentasList },
+      { path: 'reportes', Component: ReportesList },
+      { path: 'documentacion', Component: Documentacion },
     ],
   },
 ]);
