@@ -1,5 +1,6 @@
 import React from 'react'
 import Breadcrumbs from '../../components/common/Breadcrumbs';
+import SearchBar from '../../components/common/SearchBar';
 
 function ReportesList() {
   const breadcrumbItems = [
@@ -46,7 +47,7 @@ function ReportesList() {
     },
     {
       id: '005',
-      userName: 'ALberto',
+      userName: 'Alberto',
       userSurname: 'Martinez',
       date: '2025-09-19T18:50:22.169185',
       time: '11:15',
@@ -81,8 +82,6 @@ function ReportesList() {
       totalAmount: 22360.75, 
     }                     
   ];
-
-  // Logica para los widgets
   
   const historicoVentas = 150;
 
@@ -116,31 +115,19 @@ function ReportesList() {
       <Breadcrumbs items={breadcrumbItems} />
 
       <div className="flex flex-col lg:flex-row gap-6">
-        {/* Tabla con listado de ventas */}
+        {/* Contenedor con filtros y listado de ventas */}
         <div className="flex-1 bg-white p-6 rounded-lg shadow-lg">
           <h2 className="text-2xl font-bold text-gray-900 text-left mb-6">Listado de Ventas</h2>
-
-          {/* Barra de filtros */}
-        <div className="flex flex-col border-b border-gray-200 md:flex-row items-stretch gap-3 mb-3 pb-4">
+          {/* Contenedor de filtros */}
+          <div className="flex flex-col border-b border-gray-200 items-stretch md:flex-row items-center gap-3 mb-3 pb-4">
             {/* Buscador de ventas */}
-            <div className="flex-1 md:flex-none w-full md:w-1/3">
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
-                  </svg>
-                </span>
-                <input
-                  type="search"
-                  placeholder="Buscar venta..."
-                  className="pl-10 pr-3 py-2 w-full border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-amber-300"
-                />
-              </div>
-            </div>
+            <SearchBar className="flex-1" placeholder="Buscar venta..." />
 
-            {/* Select Forma de Pago */}
-            <div className="w-full md:w-1/4">
-              <select className="w-full py-2 px-3 border border-gray-200 rounded-md text-sm text-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-300">
+            {/* Select Forma de Pago  */}
+            <div className="flex-1">
+              <select
+                className="w-full h-full py-2 px-4 border border-gray-300 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary text-gray-400"
+              >
                 <option value="" disabled selected>Forma de pago</option>
                 <option>Tarjeta de crédito</option>
                 <option>Tarjeta de débito</option>
@@ -150,21 +137,21 @@ function ReportesList() {
             </div>
 
             {/* Filtro por fecha */}
-            <div className="flex items-center gap-2 w-full md:w-1/3">
+            <div className="flex items-center gap-2 flex-1">
               <div className="w-1/2">
                 <input
                   type="date"
-                  className="w-full py-2 px-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-amber-300"
+                  className="w-full py-2 px-4 border border-gray-300 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary text-gray-400"
                 />
               </div>
               <div className="w-1/2">
                 <input
                   type="date"
-                  className="w-full py-2 px-3 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-amber-300"
+                  className="w-full py-2 px-4 border border-gray-300 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary text-gray-400"
                 />
               </div>
             </div>
-        </div>
+          </div>  
 
           <div className="overflow-x-auto">
             <table className="w-full min-w-[640px] table-auto">
