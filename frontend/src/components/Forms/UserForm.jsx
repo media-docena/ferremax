@@ -177,8 +177,8 @@ function UserForm({
             >
               <option value=''>Seleccione un rol</option>
               <option value='administrador'>Administrador</option>
-              <option value='encargado'>Empleado</option>
-              <option value='vendedor'>Cliente</option>
+              <option value='encargado'>Encargado</option>
+              <option value='vendedor'>Vendedor</option>
             </select>
           </div>
           <div>
