@@ -1,19 +1,21 @@
 import React from 'react';
 import { createBrowserRouter } from 'react-router';
 import authMiddleware from './Middlewares/authMiddleware';
+import Login from './pages/Login/Login';
 import Layout from './Layout';
 import Home from './pages/Home/Home';
-import ProductosList from './pages/Inventario/ProductosList';
 import UsuariosList from './pages/Usuarios/UsuariosList';
+import UsuarioCrear from './pages/Usuarios/UsuarioCrear';
+import UsuarioEditar from './pages/Usuarios/UsuarioEditar';
+import UsuarioDetalle from './pages/Usuarios/UsuarioDetalle';
+import ProductosList from './pages/Inventario/ProductosList';
+import ProductoDetalle from './pages/Inventario/ProductoDetalle';
+import ProductoEditar from './pages/Inventario/ProductoEditar';
+import ProductoCrear from './pages/Inventario/ProductoCrear';
 import VentasList from './pages/Ventas/VentasList';
 import ReportesList from './pages/Reportes/ReportesList';
 import Documentacion from './pages/Documentacion/Documentacion';
 import ErrorPage from './pages/Error/ErrorPage';
-import ProductoDetalle from './pages/Inventario/ProductoDetalle';
-import UsuarioDetalle from './pages/Usuarios/UsuarioDetalle';
-import ProductoEditar from './pages/Inventario/ProductoEditar';
-import ProductoCrear from './pages/Inventario/ProductoCrear';
-import Login from './pages/Login/Login';
 
 
 const router = createBrowserRouter([
@@ -48,6 +50,8 @@ const router = createBrowserRouter([
         children: [
           { index: true, Component: UsuariosList },
           { path: ':usuarioId', Component: UsuarioDetalle },
+          { path: ':usuarioId/editar', Component: UsuarioEditar },
+          { path: 'crear', Component: UsuarioCrear },
         ],
       },
       { path: 'ventas', Component: VentasList },

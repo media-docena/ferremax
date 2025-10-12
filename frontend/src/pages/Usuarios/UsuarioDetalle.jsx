@@ -83,6 +83,7 @@ function UsuarioDetalle() {
             label='Editar'
             icon={<EditIcon />}
             variant='info'
+            to={`/usuarios/${userData.id}/editar`}
             onClick={() => console.log('Editar')}
           />
         </div>

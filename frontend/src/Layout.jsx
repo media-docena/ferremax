@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router';
 import { useNavigate } from 'react-router';
 import Header from './components/layout/Header/Header';
+import Footer from './components/layout/Footer/Footer';
 
 function Layout() {
   // Cierra sesión removiendo al usuario de localStorage
@@ -24,6 +25,7 @@ function Layout() {
             <Outlet />
           </div>
         </main>
+        <Footer/>
       </div>
     </>
   );
