@@ -175,7 +175,7 @@ function UserForm({
                          focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent'
               required
             >
-              <option value=''>Seleccione un rol</option>
+              <option value='' hidden>Seleccione un rol</option>
               <option value='administrador'>Administrador</option>
               <option value='encargado'>Encargado</option>
               <option value='vendedor'>Vendedor</option>
