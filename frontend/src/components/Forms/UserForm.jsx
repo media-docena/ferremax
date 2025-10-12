@@ -9,7 +9,7 @@ function UserForm({
   initialData = {},
   mode = 'create',
   onSubmit,
-  onCancel,
+  link,
 }) {
   const [formData, setFormData] = useState({
     nombre: '',
@@ -227,7 +227,7 @@ function UserForm({
 
         {/* Action Buttons */}
         <div className='mt-8 pt-6 border-t border-gray-200 flex justify-end space-x-3'>
-          <ActionButton label='Cancelar' type='button' onClick={onCancel} />
+          <ActionButton label='Cancelar' type='button' to={link} />
           <ActionButton
             label='Guardar Usuario'
             icon={<SaveIcon />}

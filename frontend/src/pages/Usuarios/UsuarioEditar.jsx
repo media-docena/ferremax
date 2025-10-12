@@ -28,7 +28,7 @@ function UsuarioEditar() {
         mode='edit'
         initialData={initialUser}
         onSubmit={(data) => console.log('Usuario editado:', data)}
-        onCancel={() => console.log('Edición cancelada')}
+        link={'/usuarios'}
       />
     </div>
   );

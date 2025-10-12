@@ -15,7 +15,7 @@ function UsuarioCrear() {
       <UserForm
         mode='create'
         onSubmit={(data) => console.log('Usuario creado:', data)}
-        onCancel={() => console.log('Creación cancelada')}
+        link={'/usuarios'}
       />
     </div>
   );
