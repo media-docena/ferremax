@@ -119,7 +119,7 @@ function ReportesList() {
         <div className="flex-1 bg-white p-6 rounded-lg shadow-lg">
           <h2 className="text-2xl font-bold text-gray-900 text-left mb-6">Listado de Ventas</h2>
           {/* Contenedor de filtros */}
-          <div className="flex flex-col border-b border-gray-200 items-stretch md:flex-row items-center gap-3 mb-3 pb-4">
+          <div className="flex flex-col border-b border-gray-200 md:flex-row items-center gap-3 mb-3 pb-4">
             {/* Buscador de ventas */}
             <SearchBar className="flex-1" placeholder="Buscar venta..." />
 
