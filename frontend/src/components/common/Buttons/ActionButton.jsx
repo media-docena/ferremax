@@ -15,7 +15,7 @@
  *   label="Nuevo Producto"
  *   icon={<AddIcon className="w-5 h-5" />}
  *   variant="warning"
- *   to="/productos/nuevo"
+ *   to="/productos/crear"
  * />
  */
 

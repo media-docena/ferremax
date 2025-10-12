@@ -15,7 +15,7 @@ function ProductoCrear() {
       <ProductForm
         mode='create'
         onSubmit={(data) => console.log('Producto creado:', data)}
-        onCancel={() => console.log('Creación cancelada')}
+        link={'/productos'}
       />
     </div>
   );

@@ -9,7 +9,7 @@ function ProductForm({
   initialData = {},
   mode = 'create',
   onSubmit,
-  onCancel,
+  link
 }) {
   const [formData, setFormData] = useState({
     nombre: '',
@@ -136,12 +136,16 @@ function ProductForm({
               name='marca'
               value={formData.marca}
               onChange={handleChange}
-              className='w-full px-4 py-2 font-roboto border border-gray-200 rounded-md bg-gray-50
-                         focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent'
+              className={`w-full px-4 py-2 font-roboto border border-gray-200 rounded-md bg-gray-50
+                         placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent
+                        ${!formData.marca ? 'text-gray-400' : 'text-gray-800'}`}
             >
-              <option>Stanley</option>
-              <option>Truper</option>
-              <option>DeWalt</option>
+              <option value='' disabled hidden>
+                Seleccionar una marca
+              </option>
+              <option value={'Stanley'}>Stanley</option>
+              <option value={'Trupper'}>Truper</option>
+              <option value={'DeWalt'}>DeWalt</option>
             </select>
           </div>
           <div>
@@ -156,12 +160,24 @@ function ProductForm({
               name='proveedor'
               value={formData.proveedor}
               onChange={handleChange}
-              className='w-full px-4 py-2 font-roboto border border-gray-200 rounded-md bg-gray-50
-                         focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent'
+              className={`w-full px-4 py-2 font-roboto border border-gray-200 rounded-md bg-gray-50
+                         focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent
+                         ${
+                           !formData.proveedor
+                             ? 'text-gray-400'
+                             : 'text-gray-800'
+                         }`}
             >
-              <option>Ferretería Central</option>
-              <option>Proveedor Industrial SA</option>
-              <option>Herramientas del Norte</option>
+              <option value='' disabled hidden>
+                Seleccionar un proveedor
+              </option>
+              <option value={'Ferretería Central'}>Ferretería Central</option>
+              <option value={'Proveedor Industrial SA'}>
+                Proveedor Industrial SA
+              </option>
+              <option value={'Herramientas del Norte'}>
+                Herramientas del Norte
+              </option>
             </select>
           </div>
         </div>
@@ -206,7 +222,10 @@ function ProductForm({
             />
           </div>
           <div>
-            <label htmlFor='fechaDeVencimiento' className='block text-sm font-medium text-gray-500 mb-2'>
+            <label
+              htmlFor='fechaDeVencimiento'
+              className='block text-sm font-medium text-gray-500 mb-2'
+            >
               Fecha de Vencimiento
             </label>
             <input
@@ -215,8 +234,13 @@ function ProductForm({
               name='fechaDeVencimiento'
               value={formData.fechaDeVencimiento}
               onChange={handleChange}
-              className='w-full px-4 py-2 font-roboto border border-gray-200 rounded-md bg-gray-50
-                         focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent'
+              className={`w-full px-4 py-2 font-roboto border border-gray-200 rounded-md bg-gray-50
+                         focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent
+                         ${
+                           !formData.fechaDeVencimiento
+                             ? 'text-gray-400'
+                             : 'text-gray-800'
+                         }`}
             />
           </div>
         </div>
@@ -224,7 +248,10 @@ function ProductForm({
         {/* Row 4: Categoría y Unidad */}
         <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-8'>
           <div>
-            <label htmlFor='categoria' className='block text-sm font-medium text-gray-500 mb-2'>
+            <label
+              htmlFor='categoria'
+              className='block text-sm font-medium text-gray-500 mb-2'
+            >
               Categoría
             </label>
             <select
@@ -232,16 +259,27 @@ function ProductForm({
               name='categoria'
               value={formData.categoria}
               onChange={handleChange}
-              className='w-full px-4 py-2 font-roboto border border-gray-200 rounded-md bg-gray-50
-                         focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent'
+              className={`w-full px-4 py-2 font-roboto border border-gray-200 rounded-md bg-gray-50
+                         focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent
+                         ${
+                           !formData.categoria
+                             ? 'text-gray-400'
+                             : 'text-gray-800'
+                         }`}
             >
+              <option value={''} disabled hidden>
+                Seleccionar una categoría
+              </option>
               <option>Herramientas Eléctricas</option>
               <option>Herramientas Manuales</option>
               <option>Plomería</option>
             </select>
           </div>
           <div>
-            <label htmlFor='unidad' className='block text-sm font-medium text-gray-500 mb-2'>
+            <label
+              htmlFor='unidad'
+              className='block text-sm font-medium text-gray-500 mb-2'
+            >
               Unidad
             </label>
             <select
@@ -249,19 +287,25 @@ function ProductForm({
               name='unidad'
               value={formData.unidad}
               onChange={handleChange}
-              className='w-full px-4 py-2 font-roboto border border-gray-200 rounded-md bg-gray-50
-                         focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent'
+              className={`w-full px-4 py-2 font-roboto border border-gray-200 rounded-md bg-gray-50
+                         focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent
+                         ${
+                           !formData.unidad
+                             ? 'text-gray-400'
+                             : 'text-gray-800'
+                         }`}
             >
-              <option>Unidad</option>
-              <option>Caja</option>
-              <option>Metro</option>
+              <option value={''} disabled hidden>Seleccionar unidad</option>
+              <option value={'Unidad'}>Unidad</option>
+              <option value={'Caja'}>Caja</option>
+              <option value={'Metro'}>Metro</option>
             </select>
           </div>
         </div>
 
         {/* Action Buttons */}
         <div className='mt-8 pt-6 border-t border-gray-200 flex justify-end space-x-3'>
-          <ActionButton label='Cancelar' type='button' onClick={onCancel} />
+          <ActionButton label='Cancelar' type='button' to={link} />
           <ActionButton
             label='Guardar'
             icon={<SaveIcon />}
