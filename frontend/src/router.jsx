@@ -12,6 +12,8 @@ import ProductoDetalle from './pages/Inventario/ProductoDetalle';
 import UsuarioDetalle from './pages/Usuarios/UsuarioDetalle';
 import ProductoEditar from './pages/Inventario/ProductoEditar';
 import ProductoCrear from './pages/Inventario/ProductoCrear';
+import UsuarioCrear from './pages/Usuarios/UsuarioCrear';
+import UsuarioEditar from './pages/Usuarios/UsuarioEditar';
 
 const router = createBrowserRouter([
   {
@@ -39,6 +41,8 @@ const router = createBrowserRouter([
         children: [
           { index: true, Component: UsuariosList },
           { path: ':usuarioId', Component: UsuarioDetalle },
+          { path: ':usuarioId/editar', Component: UsuarioEditar },
+          { path: 'crear', Component: UsuarioCrear },
         ],
       },
       { path: 'ventas', Component: VentasList },
