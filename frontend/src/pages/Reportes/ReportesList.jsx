@@ -128,7 +128,7 @@ function ReportesList() {
               <select
                 className="w-full h-full py-2 px-4 border border-gray-300 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary text-gray-400"
               >
-                <option value="" disabled selected>Forma de pago</option>
+                <option value="" hidden>Forma de pago</option>
                 <option>Tarjeta de crédito</option>
                 <option>Tarjeta de débito</option>
                 <option>Efectivo</option>

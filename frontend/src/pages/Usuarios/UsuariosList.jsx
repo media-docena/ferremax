@@ -8,7 +8,7 @@ import VisibilityIcon from '../../assets/icons/visibility.svg?react';
 import EditIcon from '../../assets/icons/edit.svg?react';
 import DeleteIcon from '../../assets/icons/delete.svg?react';
 import ArrowUpwardIcon from '../../assets/icons/arrow_upward.svg?react'
-
+import UsuarioCrear from '/src/pages/Usuarios/UsuarioCrear.jsx';
 
 function UsuariosList() {
   const breadcrumbItems = [
@@ -98,7 +98,8 @@ function UsuariosList() {
                     label='Nuevo Usuario'
                     icon={<AddIcon />}
                     variant='warning'
-                    onClick={() => console.log('Nuevo usuario')}
+                    to='crear'
+                    onClick={UsuarioCrear}
                   />
                 </div>
               </div>
@@ -135,9 +136,7 @@ function UsuariosList() {
                         {/* Action Buttons Column */}
                         <td className='p-4 flex justify-center items-center space-x-2'>
                           <ActionIconButton icon={<VisibilityIcon />} variant='info' to={user.id} />
-                          <button className='text-gray-500 hover:text-yellow-500'>
-                            <EditIcon />
-                          </button>
+                          <ActionIconButton icon={<EditIcon />} variant='warning' to={`${user.id}/editar`} />
                           {user.status === 'Inactivo' ? (
                             <button className='text-gray-500 hover:text-green-500'>
                               <ArrowUpwardIcon />
