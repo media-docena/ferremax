@@ -33,14 +33,10 @@ function Login() {
       password === usuarioPrueba.password
     ) {
       setError('');
+      const { password: _password, ...userSession } = usuarioPrueba;
       localStorage.setItem(
         'userSession',
-        JSON.stringify({
-          nombre: 'Alberto',
-          apellido: 'Martinez',
-          rol: 'Administrador',
-          correo: 'albertom@gmail.com',
-        })
+        JSON.stringify(userSession)
       );
       navigate('/');
     } else {
