@@ -31,7 +31,7 @@ function ProductoEditar() {
         mode='edit'
         initialData={initialProduct}
         onSubmit={(data) => console.log('Producto editado:', data)}
-        onCancel={() => console.log('Edición cancelada')}
+        link={'/productos'}
       />
     </div>
   );
