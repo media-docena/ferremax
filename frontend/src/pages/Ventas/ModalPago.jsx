@@ -1,19 +1,19 @@
 import React, {useState} from 'react';
+import ModalVenta from './ModalVenta'
 import ActionButton from '../../components/common/Buttons/ActionButton';
 
-const paymentMethods = [
-    { id: 'efectivo', label: 'Efectivo' },
-    { id: 'tarjeta', label: 'Tarjeta de Crédito' },
-];
-
-const ModalPago = ({ total, onClose }) => {
+const ModalPago = ({ total, onClose, onOpen }) => {
+    const paymentMethods = [
+        { id: 'efectivo', label: 'Efectivo' },
+        { id: 'tarjeta', label: 'Tarjeta de Crédito' },
+    ];
 
     const [paymentMethod, setPaymentMethod] = useState(paymentMethods[0].id)
 
     const handleSelectChange = (event) => {
         setPaymentMethod(event.target.value);
     };
-    
+
     return (
         <div className='fixed inset-0 bg-gray-800/40 backdrop-blur-sm flex items-center justify-center z-50'>
             <div className='bg-white rounded-lg shadow-xl p-6 w-[400px] h-[300px] text-center'>
@@ -46,11 +46,9 @@ const ModalPago = ({ total, onClose }) => {
                         <ActionButton
                             label='Confirmar Venta'
                             variant='continuePayment'
-                            onClick={() => {
-                                console.log('Continuar con el pago');
-                                onClose();
-                            }}
+                            onClick={onOpen}
                         />
+
                     </div>
                 </div>
             </div>

@@ -7,6 +7,7 @@ import ActionIconButton from '../../components/common/Buttons/ActionIconButton';
 import RemoveIcon from '../../assets/icons/remove.svg?react';
 import AddIcon from '../../assets/icons/add.svg?react';
 import DeleteIcon from '../../assets/icons/delete.svg?react';
+import ModalVenta from './ModalVenta';
 
 function VentasList() {
   const breadcrumbItems = [
@@ -84,6 +85,10 @@ function VentasList() {
   const [showModalPago, setShowModalPago] = useState(false);
   const handleOpenModalPago = () => setShowModalPago(true);
   const handleCloseModalPago = () => setShowModalPago(false);
+
+  const [showModalVenta, setShowModalVenta] = useState(false);
+  const handleOpenModalVenta = () => setShowModalVenta(true);
+  const handleCloseModalVenta = () => setShowModalVenta(false);
 
   return (
     
@@ -184,7 +189,17 @@ function VentasList() {
               {showModalPago && (
                 <ModalPago 
                   total={99.19}
-                  onClose={handleCloseModalPago}
+                  onClose={() => handleCloseModalPago()}
+                  onOpen={() => {
+                    handleCloseModalPago()
+                    handleOpenModalVenta()
+                  }}
+                />
+              )}
+              {showModalVenta && (
+                <ModalVenta
+                  total={99.19}
+                  onClose={handleCloseModalVenta}
                 />
               )}
             </div>
