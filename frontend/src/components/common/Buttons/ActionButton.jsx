@@ -53,6 +53,7 @@ function ActionButton ({
     addValid: 'bg-yellow-400 hover:bg-yellow-200 text-gray-800',
     addInvalid: 'bg-gray-300 hover:bg-gray-400 text-gray-500',
     continuePayment: 'w-full justify-center bg-yellow-400 hover:bg-yellow-200 text-gray-800',
+    backPayment: 'w-full justify-center bg-gray-300 hover:bg-gray-400 text-gray-800',
   };
 
   // Clases base compartidas

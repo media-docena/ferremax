@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState } from 'react'
+import ModalPago from './ModalPago'
 import Breadcrumbs from '../../components/common/Breadcrumbs';
 import SearchBar from '../../components/common/SearchBar';
 import ActionButton from '../../components/common/Buttons/ActionButton';
@@ -80,18 +81,9 @@ function VentasList() {
     else if (stock === 0) return 'addInvalid';
   };
 
-  const getRowHighlight = (highlight) => {
-    switch (highlight) {
-      case 'expiring':
-        return 'bg-orange-100';
-      case 'out-of-stock':
-        return 'bg-red-100';
-      case 'low-stock':
-        return 'bg-amber-100';
-      default:
-        return '';
-    }
-  };
+  const [showModalPago, setShowModalPago] = useState(false);
+  const handleOpenModalPago = () => setShowModalPago(true);
+  const handleCloseModalPago = () => setShowModalPago(false);
 
   return (
     
@@ -187,7 +179,14 @@ function VentasList() {
               <ActionButton
                 label='Continuar a Forma de Pago'
                 variant='continuePayment'
+                onClick={handleOpenModalPago}
               />
+              {showModalPago && (
+                <ModalPago 
+                  total={99.19}
+                  onClose={handleCloseModalPago}
+                />
+              )}
             </div>
           </div>
         </div>
