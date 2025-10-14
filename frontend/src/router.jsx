@@ -13,6 +13,7 @@ import ProductoDetalle from './pages/Inventario/ProductoDetalle';
 import ProductoEditar from './pages/Inventario/ProductoEditar';
 import ProductoCrear from './pages/Inventario/ProductoCrear';
 import VentasList from './pages/Ventas/VentasList';
+import VentasFactura from './pages/Ventas/VentasFactura';
 import ReportesList from './pages/Reportes/ReportesList';
 import Documentacion from './pages/Documentacion/Documentacion';
 import ErrorPage from './pages/Error/ErrorPage';
@@ -54,7 +55,12 @@ const router = createBrowserRouter([
           { path: 'crear', Component: UsuarioCrear },
         ],
       },
-      { path: 'ventas', Component: VentasList },
+      { path: 'ventas',
+        children: [
+          { index: true, Component: VentasList },
+          { path: 'factura', Component: VentasFactura },
+        ],
+      },
       { path: 'reportes', Component: ReportesList },
       { path: 'documentacion', Component: Documentacion },
     ],

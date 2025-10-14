@@ -31,6 +31,8 @@ const ModalVenta = ({ onClose, total }) => {
                         <ActionButton
                             label='Ver Factura'
                             variant='addValid'
+                            to='/ventas/factura'
+                            onClick={() => console.log('Ver Factura')}
                         />
                     </div>
                 </div>
