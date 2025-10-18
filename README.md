@@ -35,6 +35,9 @@ npm install
 cd frontend
 npm install
 ```
+##  Credenciales de Prueba: 
+Usuario: albertom@gmail.com
+Contraseña: admin123
 
 ### Autores ✒️
 - Cicchini, Josefina
