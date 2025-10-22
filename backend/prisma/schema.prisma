@@ -1,0 +1,198 @@
+/* =============================
+   Configuración de Prisma ORM
+  ========================== */
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+/* =============================
+   Modelos de la base de datos
+  ========================== */
+
+model Categoria {
+  idCategoria Int         @id @default(autoincrement())
+  nombre      String      @db.VarChar(50)
+  productos   Producto[]
+}
+
+model DetalleVenta {
+  idDetalleVenta Int       @id @default(autoincrement())
+  idVenta        Int
+  idProducto     Int
+  cantidad       Int
+  precio         Decimal   @db.Decimal(10, 2)
+  subtotal       Decimal?  @db.Decimal(10, 2)
+  ventas         Venta    @relation(fields: [idVenta], references: [idVenta], onDelete: NoAction, onUpdate: NoAction, map: "detalleventa_ibfk_1")
+  productos      Producto @relation(fields: [idProducto], references: [idProducto], onDelete: NoAction, onUpdate: NoAction, map: "detalleventa_ibfk_2")
+
+  @@index([idProducto], map: "idProducto")
+  @@index([idVenta], map: "idVenta")
+}
+
+model Empleado {
+  idEmpleado         Int               @id @default(autoincrement())
+  nombre             String            @db.VarChar(50)
+  apellido           String            @db.VarChar(50)
+  dni                String            @unique(map: "dni") @db.VarChar(20)
+  direccion          String?           @db.VarChar(100)
+  telefono           String?           @db.VarChar(20)
+  estado             empleados_estado? @default(activo)
+  fechaCreacion      DateTime?         @default(now()) @db.Timestamp(0)
+  fechaActualizacion DateTime?         @default(now()) @db.Timestamp(0)
+  usuarios           Usuario[]
+  ventas             Venta[]
+
+  @@map("Empleados")
+}
+
+model FormaPago {
+  idFormaPago Int      @id @default(autoincrement())
+  descripcion String   @db.VarChar(50)
+  ventas      Venta[]
+}
+
+model Marca {
+  idMarca   Int         @id @default(autoincrement())
+  nombre    String      @db.VarChar(50)
+  productos Producto[]
+}
+
+model ProductoProveedor {
+  idProdProv  Int       @id @default(autoincrement())
+  idProducto  Int
+  idProveedor Int
+  productos   Producto @relation(fields: [idProducto], references: [idProducto], onDelete: NoAction, onUpdate: NoAction, map: "productoproveedor_ibfk_1")
+  proveedor   Proveedor @relation(fields: [idProveedor], references: [idProveedor], onDelete: NoAction, onUpdate: NoAction, map: "productoproveedor_ibfk_2")
+
+  @@index([idProducto], map: "idProducto")
+  @@index([idProveedor], map: "idProveedor")
+}
+
+model Producto {
+  idProducto         Int                 @id @default(autoincrement())
+  nombre             String              @db.VarChar(100)
+  descripcion        String?             @db.Text
+  precio             Decimal             @db.Decimal(10, 2)
+  stock              Int?                @default(0)
+  stockMin           Int?                @default(5)
+  idCategoria        Int?
+  idMarca            Int?
+  fechaVencimiento   DateTime?           @db.Date
+  estado             productos_estado?   @default(activo)
+  fechaCreacion      DateTime?           @default(now()) @db.Timestamp(0)
+  fechaActualizacion DateTime?           @default(now()) @db.Timestamp(0)
+  detalleventa       DetalleVenta[]
+  productoproveedor  ProductoProveedor[]
+  categoria          Categoria?          @relation(fields: [idCategoria], references: [idCategoria], onDelete: NoAction, onUpdate: NoAction, map: "productos_ibfk_1")
+  marca              Marca?              @relation(fields: [idMarca], references: [idMarca], onDelete: NoAction, onUpdate: NoAction, map: "productos_ibfk_2")
+  productosunidad    ProductosUnidad[]
+
+  @@index([idCategoria], map: "idCategoria")
+  @@index([idMarca], map: "idMarca")
+  @@map("Productos")
+}
+
+model ProductosUnidad {
+  idProdUnidad Int       @id @default(autoincrement())
+  idProducto   Int
+  idUnidad     Int
+  productos    Producto @relation(fields: [idProducto], references: [idProducto], onDelete: NoAction, onUpdate: NoAction, map: "productosunidad_ibfk_1")
+  unidad       Unidad    @relation(fields: [idUnidad], references: [idUnidad], onDelete: NoAction, onUpdate: NoAction, map: "productosunidad_ibfk_2")
+
+  @@index([idProducto], map: "idProducto")
+  @@index([idUnidad], map: "idUnidad")
+}
+
+model Proveedor {
+  idProveedor       Int                 @id @default(autoincrement())
+  nombre            String              @db.VarChar(100)
+  telefono          String?             @db.VarChar(20)
+  direccion         String?             @db.VarChar(100)
+  correo            String?             @db.VarChar(100)
+  estado            proveedor_estado?   @default(activo)
+  productoproveedor ProductoProveedor[]
+}
+
+model Rol {
+  idRol       Int           @id @default(autoincrement())
+  descripcion String        @db.VarChar(50)
+  usuariosrol UsuariosRol[]
+}
+
+model Unidad {
+  idUnidad        Int               @id @default(autoincrement())
+  nombre          String            @db.VarChar(50)
+  abreviatura     String            @db.VarChar(10)
+  productosunidad ProductosUnidad[]
+}
+
+model Usuario {
+  idUsuario          Int              @id @default(autoincrement())
+  correo             String           @unique(map: "correo") @db.VarChar(100)
+  password           String           @db.VarChar(255)
+  idEmpleado         Int?
+  estado             usuarios_estado? @default(activo)
+  fechaCreacion      DateTime?        @default(now()) @db.Timestamp(0)
+  fechaActualizacion DateTime?        @default(now()) @db.Timestamp(0)
+  empleados          Empleado?       @relation(fields: [idEmpleado], references: [idEmpleado], onDelete: NoAction, onUpdate: NoAction, map: "usuarios_ibfk_1")
+  usuariosrol        UsuariosRol[]
+
+  @@index([idEmpleado], map: "idEmpleado")
+  @@map("Usuarios")
+}
+
+model UsuariosRol {
+  idUsuRol  Int      @id @default(autoincrement())
+  idUsuario Int
+  idRol     Int
+  usuarios  Usuario @relation(fields: [idUsuario], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "usuariosrol_ibfk_1")
+  rol       Rol      @relation(fields: [idRol], references: [idRol], onDelete: NoAction, onUpdate: NoAction, map: "usuariosrol_ibfk_2")
+
+  @@index([idRol], map: "idRol")
+  @@index([idUsuario], map: "idUsuario")
+}
+
+model Venta {
+  idVenta            Int            @id @default(autoincrement())
+  idEmpleado         Int
+  fecha              DateTime       @db.Date
+  hora               DateTime       @db.Time(0)
+  idFormaPago        Int
+  totalVenta         Decimal?       @default(0.00) @db.Decimal(10, 2)
+  fechaCreacion      DateTime?      @default(now()) @db.Timestamp(0)
+  fechaActualizacion DateTime?      @default(now()) @db.Timestamp(0)
+  detalleventa       DetalleVenta[]
+  empleados          Empleado      @relation(fields: [idEmpleado], references: [idEmpleado], onDelete: NoAction, onUpdate: NoAction, map: "ventas_ibfk_1")
+  formapago          FormaPago      @relation(fields: [idFormaPago], references: [idFormaPago], onDelete: NoAction, onUpdate: NoAction, map: "ventas_ibfk_2")
+
+  @@index([idEmpleado], map: "idEmpleado")
+  @@index([idFormaPago], map: "idFormaPago")
+  @@map("Ventas")
+}
+
+enum usuarios_estado {
+  activo
+  inactivo
+}
+
+enum proveedor_estado {
+  activo
+  inactivo
+}
+
+enum empleados_estado {
+  activo
+  inactivo
+}
+
+enum productos_estado {
+  activo
+  inactivo
+}
