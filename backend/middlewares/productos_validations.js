@@ -28,7 +28,6 @@ export const validarProductoId = [
     .withMessage('El ID del producto es requerido')
     .bail()
     .customSanitizer(sanitizarCaracteresPeligrosos)
-    .bail()
     .isInt({ min: 1 })
     .withMessage('El ID debe ser un número entero positivo')
     .toInt(), 

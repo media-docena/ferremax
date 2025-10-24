@@ -55,7 +55,7 @@ export default {
       include: {
         categoria: true,
         marca: true,
-        productosUnidad: {
+        productosunidad: {
           include: { unidad: true },
         },
         productoproveedor: {
