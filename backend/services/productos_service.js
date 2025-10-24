@@ -5,9 +5,12 @@ import prisma from '../prisma/prismaClient.js';
  */
 
 export default {
+
   async findAll(searchTerm = '') {
-    // Intenta convertir el searchTerm a número
-    // si el término del filtrado es el id del producto
+    /**===============================================
+    * Intenta convertir el searchTerm a número
+    * si el término del filtrado es el id del producto
+    *=================================================*/
     const codigoNumerico =
       !isNaN(searchTerm) && searchTerm.trim() !== ''
         ? parseInt(searchTerm, 10)
@@ -45,4 +48,21 @@ export default {
       },
     });
   },
+
+  async findById(id) {
+    return await prisma.producto.findUnique({
+      where: { idProducto: id },
+      include: {
+        categoria: true,
+        marca: true,
+        productosUnidad: {
+          include: { unidad: true },
+        },
+        productoproveedor: {
+          include: { proveedor: true },
+        },
+      },
+    });
+  },
+  
 };
