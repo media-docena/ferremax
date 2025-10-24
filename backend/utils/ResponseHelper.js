@@ -97,7 +97,7 @@ export class ResponseHelper {
    * });
    */
   static created(res, message, data) {
-    return this.success(res, 201, message, data);
+    return ResponseHelper.success(res, 201, message, data);
   }
 
   /**
@@ -128,7 +128,7 @@ export class ResponseHelper {
    * ResponseHelper.ok(res, 'Producto actualizado correctamente', updated);
    */
   static ok(res, message, data = null) {
-    return this.success(res, 200, message, data);
+    return ResponseHelper.success(res, 200, message, data);
   }
 
   /**
@@ -193,7 +193,7 @@ export class ResponseHelper {
    * ResponseHelper.message(res, 'Notificación enviada correctamente');
    */
   static message(res, message) {
-    return this.success(res, 200, message, null);
+    return ResponseHelper.success(res, 200, message, null);
   }
 
   /**
