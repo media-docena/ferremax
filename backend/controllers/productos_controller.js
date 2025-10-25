@@ -2,6 +2,7 @@ import ProductService from '../services/productos_service.js';
 import { sendOk } from '../utils/ResponseHelper.js';
 import { ApiError } from '../utils/ApiError.js';
 import logger from '../config/logger.js';
+import { obtenerMensajeEstado } from './utils.js';
 
 export default {
     // Listar productos del inventario con filtro opcional
@@ -32,6 +33,24 @@ export default {
             logger.error('Error al obtener detalle un producto por ID', { error });
             next(error);
         }
-    }
+    },
+
+    // Cambia el estado de un producto
+    async cambiarEstado(req, res, next) {
+        try {
+            const { id } = req.params;
+            const { estado } = req.body;
+            const productoActualizado = await ProductService.changeStatus(id, estado);
+
+            if (!productoActualizado) throw ApiError.notFound('Producto no encontrado para actualizar estado');
+
+            const mensaje = obtenerMensajeEstado(estado, 'Producto');
+
+            sendOk(res, mensaje, productoActualizado);
+        } catch (error) {
+            logger.error('Error al cambiar el estado del producto', { error });
+            next(error);
+        }
+    },
 
 };

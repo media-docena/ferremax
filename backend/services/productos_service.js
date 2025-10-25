@@ -65,4 +65,11 @@ export default {
     });
   },
   
+  async changeStatus(id, status) {
+    return await prisma.producto.update({
+      where: { idProducto: id },
+      data: { estado: status },
+      select: { idProducto: true, nombre: true, estado: true },
+    });
+  }
 };

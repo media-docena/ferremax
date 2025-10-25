@@ -1,5 +1,6 @@
-import { param, query } from 'express-validator';
-import { validateRequest, sanitizarCaracteresPeligrosos } from './utils.js';
+import { query } from 'express-validator';
+import { validateRequest, validateIdParam, validateString, validateConstants, sanitizeCharacters } from './utils.js';
+import { ESTADOS } from '../utils/constants.js';
 
 /**
  * Validación para el filtrado de productos
@@ -11,7 +12,7 @@ export const validarProductoFiltro = [
     .trim() 
     .notEmpty()
     .withMessage('El término de búsqueda no puede estar vacío')
-    .customSanitizer(sanitizarCaracteresPeligrosos)
+    .customSanitizer(sanitizeCharacters)
     .isLength({ max: 100 })
     .withMessage('El término de búsqueda no puede exceder 100 caracteres'),
 
@@ -23,14 +24,21 @@ export const validarProductoFiltro = [
  * Validación para obtener un producto por ID
  */
 export const validarProductoId = [
-  param('id')
-    .notEmpty()
-    .withMessage('El ID del producto es requerido')
-    .bail()
-    .customSanitizer(sanitizarCaracteresPeligrosos)
-    .isInt({ min: 1 })
-    .withMessage('El ID debe ser un número entero positivo')
-    .toInt(), 
+  validateIdParam(), 
+
+  validateRequest,
+];
+
+/**
+ * Validación para cambiar el estado de un producto
+ * Valida el ID en la ruta y el estado en el body
+ */
+export const validarProductoEstado = [
+  validateIdParam(),
+
+  validateString('estado', 20, true).toLowerCase(),
+
+  validateConstants('estado', ESTADOS),
 
   validateRequest,
 ];
