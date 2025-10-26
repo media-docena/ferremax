@@ -214,10 +214,10 @@ export default {
         throw ApiError.notFound('Producto no encontrado para actualizar');
       }
 
-      throw new ApiError(
-        error.status || 500,
-        'Error al actualizar el producto'
-      );
+      if (error.code === 'P2003') {
+      throw ApiError.badRequest('Relación inválida en la actualización');
+    }
+    throw ApiError.internal('Error al cambiar estado del producto');
     }
   },
 };

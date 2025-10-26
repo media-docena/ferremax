@@ -28,8 +28,8 @@ model DetalleVenta {
   cantidad       Int
   precio         Decimal   @db.Decimal(10, 2)
   subtotal       Decimal?  @db.Decimal(10, 2)
-  ventas         Venta    @relation(fields: [idVenta], references: [idVenta], onDelete: NoAction, onUpdate: NoAction, map: "detalleventa_ibfk_1")
-  productos      Producto @relation(fields: [idProducto], references: [idProducto], onDelete: Restrict, onUpdate: NoAction, map: "detalleventa_ibfk_2")
+  venta         Venta    @relation(fields: [idVenta], references: [idVenta], onDelete: NoAction, onUpdate: NoAction, map: "detalleventa_ibfk_1")
+  producto      Producto @relation(fields: [idProducto], references: [idProducto], onDelete: Restrict, onUpdate: NoAction, map: "detalleventa_ibfk_2")
 
   @@unique([idVenta, idProducto])
   @@index([idProducto], map: "idProducto")
@@ -45,7 +45,7 @@ model Empleado {
   telefono           String?           @db.VarChar(20)
   estado             empleados_estado? @default(activo)
   fechaCreacion      DateTime?         @default(now()) @db.Timestamp(0)
-  fechaActualizacion DateTime?         @default(now()) @db.Timestamp(0)
+  fechaActualizacion DateTime?         @updatedAt @db.Timestamp(0)
   usuarios           Usuario[]
   ventas             Venta[]
 
@@ -68,7 +68,7 @@ model ProductoProveedor {
   idProdProv  Int       @id @default(autoincrement())
   idProducto  Int
   idProveedor Int
-  productos   Producto @relation(fields: [idProducto], references: [idProducto], onDelete: Cascade, onUpdate: NoAction, map: "productoproveedor_ibfk_1")
+  producto   Producto @relation(fields: [idProducto], references: [idProducto], onDelete: Cascade, onUpdate: NoAction, map: "productoproveedor_ibfk_1")
   proveedor   Proveedor @relation(fields: [idProveedor], references: [idProveedor], onDelete: NoAction, onUpdate: NoAction, map: "productoproveedor_ibfk_2")
 
   @@unique([idProducto, idProveedor])
@@ -88,7 +88,7 @@ model Producto {
   fechaVencimiento   DateTime?           @db.Date
   estado             productos_estado?   @default(activo)
   fechaCreacion      DateTime?           @default(now()) @db.Timestamp(0)
-  fechaActualizacion DateTime?           @default(now()) @db.Timestamp(0)
+  fechaActualizacion DateTime?           @updatedAt @db.Timestamp(0)
   detalleventa       DetalleVenta[]
   productoproveedor  ProductoProveedor[]
   categoria          Categoria?          @relation(fields: [idCategoria], references: [idCategoria], onDelete: NoAction, onUpdate: NoAction, map: "productos_ibfk_1")
@@ -104,7 +104,7 @@ model ProductosUnidad {
   idProdUnidad Int       @id @default(autoincrement())
   idProducto   Int
   idUnidad     Int
-  productos    Producto @relation(fields: [idProducto], references: [idProducto], onDelete: Cascade, onUpdate: NoAction, map: "productosunidad_ibfk_1")
+  producto    Producto @relation(fields: [idProducto], references: [idProducto], onDelete: Cascade, onUpdate: NoAction, map: "productosunidad_ibfk_1")
   unidad       Unidad    @relation(fields: [idUnidad], references: [idUnidad], onDelete: NoAction, onUpdate: NoAction, map: "productosunidad_ibfk_2")
 
   @@unique([idProducto, idUnidad])
@@ -142,8 +142,8 @@ model Usuario {
   idEmpleado         Int?
   estado             usuarios_estado? @default(activo)
   fechaCreacion      DateTime?        @default(now()) @db.Timestamp(0)
-  fechaActualizacion DateTime?        @default(now()) @db.Timestamp(0)
-  empleados          Empleado?       @relation(fields: [idEmpleado], references: [idEmpleado], onDelete: NoAction, onUpdate: NoAction, map: "usuarios_ibfk_1")
+  fechaActualizacion DateTime?        @updatedAt @db.Timestamp(0)
+  empleado          Empleado?       @relation(fields: [idEmpleado], references: [idEmpleado], onDelete: NoAction, onUpdate: NoAction, map: "usuarios_ibfk_1")
   usuariosrol        UsuariosRol[]
 
   @@index([idEmpleado], map: "idEmpleado")
@@ -154,7 +154,7 @@ model UsuariosRol {
   idUsuRol  Int      @id @default(autoincrement())
   idUsuario Int
   idRol     Int
-  usuarios  Usuario @relation(fields: [idUsuario], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "usuariosrol_ibfk_1")
+  usuario  Usuario @relation(fields: [idUsuario], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "usuariosrol_ibfk_1")
   rol       Rol      @relation(fields: [idRol], references: [idRol], onDelete: NoAction, onUpdate: NoAction, map: "usuariosrol_ibfk_2")
 
   @@unique([idUsuario, idRol])
@@ -170,9 +170,9 @@ model Venta {
   idFormaPago        Int
   totalVenta         Decimal?       @default(0.00) @db.Decimal(10, 2)
   fechaCreacion      DateTime?      @default(now()) @db.Timestamp(0)
-  fechaActualizacion DateTime?      @default(now()) @db.Timestamp(0)
+  fechaActualizacion DateTime?      @updatedAt @db.Timestamp(0)
   detalleventa       DetalleVenta[]
-  empleados          Empleado      @relation(fields: [idEmpleado], references: [idEmpleado], onDelete: NoAction, onUpdate: NoAction, map: "ventas_ibfk_1")
+  empleado          Empleado      @relation(fields: [idEmpleado], references: [idEmpleado], onDelete: NoAction, onUpdate: NoAction, map: "ventas_ibfk_1")
   formapago          FormaPago      @relation(fields: [idFormaPago], references: [idFormaPago], onDelete: NoAction, onUpdate: NoAction, map: "ventas_ibfk_2")
 
   @@index([idEmpleado], map: "idEmpleado")
