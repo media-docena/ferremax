@@ -34,3 +34,6 @@ build/
 # Archivos temporales
 *.tmp
 .cache/
+
+#Archivos de prisma
+generated/prisma
