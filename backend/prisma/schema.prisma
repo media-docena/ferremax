@@ -29,8 +29,9 @@ model DetalleVenta {
   precio         Decimal   @db.Decimal(10, 2)
   subtotal       Decimal?  @db.Decimal(10, 2)
   ventas         Venta    @relation(fields: [idVenta], references: [idVenta], onDelete: NoAction, onUpdate: NoAction, map: "detalleventa_ibfk_1")
-  productos      Producto @relation(fields: [idProducto], references: [idProducto], onDelete: NoAction, onUpdate: NoAction, map: "detalleventa_ibfk_2")
+  productos      Producto @relation(fields: [idProducto], references: [idProducto], onDelete: Restrict, onUpdate: NoAction, map: "detalleventa_ibfk_2")
 
+  @@unique([idVenta, idProducto])
   @@index([idProducto], map: "idProducto")
   @@index([idVenta], map: "idVenta")
 }
@@ -67,9 +68,10 @@ model ProductoProveedor {
   idProdProv  Int       @id @default(autoincrement())
   idProducto  Int
   idProveedor Int
-  productos   Producto @relation(fields: [idProducto], references: [idProducto], onDelete: NoAction, onUpdate: NoAction, map: "productoproveedor_ibfk_1")
+  productos   Producto @relation(fields: [idProducto], references: [idProducto], onDelete: Cascade, onUpdate: NoAction, map: "productoproveedor_ibfk_1")
   proveedor   Proveedor @relation(fields: [idProveedor], references: [idProveedor], onDelete: NoAction, onUpdate: NoAction, map: "productoproveedor_ibfk_2")
 
+  @@unique([idProducto, idProveedor])
   @@index([idProducto], map: "idProducto")
   @@index([idProveedor], map: "idProveedor")
 }
@@ -102,9 +104,10 @@ model ProductosUnidad {
   idProdUnidad Int       @id @default(autoincrement())
   idProducto   Int
   idUnidad     Int
-  productos    Producto @relation(fields: [idProducto], references: [idProducto], onDelete: NoAction, onUpdate: NoAction, map: "productosunidad_ibfk_1")
+  productos    Producto @relation(fields: [idProducto], references: [idProducto], onDelete: Cascade, onUpdate: NoAction, map: "productosunidad_ibfk_1")
   unidad       Unidad    @relation(fields: [idUnidad], references: [idUnidad], onDelete: NoAction, onUpdate: NoAction, map: "productosunidad_ibfk_2")
 
+  @@unique([idProducto, idUnidad])
   @@index([idProducto], map: "idProducto")
   @@index([idUnidad], map: "idUnidad")
 }
@@ -154,6 +157,7 @@ model UsuariosRol {
   usuarios  Usuario @relation(fields: [idUsuario], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "usuariosrol_ibfk_1")
   rol       Rol      @relation(fields: [idRol], references: [idRol], onDelete: NoAction, onUpdate: NoAction, map: "usuariosrol_ibfk_2")
 
+  @@unique([idUsuario, idRol])
   @@index([idRol], map: "idRol")
   @@index([idUsuario], map: "idUsuario")
 }

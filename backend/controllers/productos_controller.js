@@ -35,6 +35,35 @@ export default {
         }
     },
 
+    async crear(req, res, next) {
+        try {
+            const nuevoProducto = await ProductService.create(req.body);
+
+            sendOk(res, 'Producto registrado exitosamente', nuevoProducto);
+            
+        } catch (error) {
+            logger.error('Error al obtener detalle un producto por ID', { error });
+            next(error);
+        }
+    },
+
+    async actualizar(req, res, next) {
+        try {
+            const productoActualizado = await ProductService.update(
+              req.params.id,
+              req.body
+            );
+
+            sendOk(res, 'Producto actualizado exitosamente', productoActualizado);
+
+        } catch (error) {
+            logger.error('Error al obtener detalle un producto por ID', {
+              error,
+            });
+            next(error);
+        }
+              
+    },
     // Cambia el estado de un producto
     async cambiarEstado(req, res, next) {
         try {
