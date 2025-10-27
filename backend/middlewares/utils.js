@@ -124,7 +124,7 @@ export function validateInt(field, min = 0) {
     return body(field)
       .isInt({ min: min })
       .withMessage(`${field} debe ser un número entero positivo`)
-      .toFloat();
+      .toInt();
   };
 }
 
@@ -278,4 +278,69 @@ export function validateDate(field, options = {}) {
         return true;
       });
   };
+}
+
+
+/**
+ * Validador para código de producto
+ * @param {Object} options - Opciones de configuración
+ * @param {string} options.location - Ubicación del campo: 'body', 'param', 'query' (default: 'body')
+ * @param {boolean} options.required - Si el campo es requerido (default: true)
+ * @param {string} options.fieldName - Nombre del campo (default: 'codigo')
+ * @param {number} options.minLength - Longitud mínima (default: 3)
+ * @param {number} options.maxLength - Longitud máxima (default: 50)
+ * @returns {ValidationChain} - Cadena de validación
+ */
+export function validateCode(options = {}) {
+  const {
+    location = 'body',
+    required = true,
+    fieldName = 'codigo',
+    minLength = 3,
+    maxLength = 50,
+  } = options;
+
+  return () => {
+
+    // Selecciona la función de validación según la ubicación
+    const validatorFn =
+      location === 'body'
+        ? body
+        : location === 'param'
+        ? param
+        : location === 'query'
+        ? query
+        : body;
+  
+    let validator = validatorFn(fieldName);
+  
+    if (!required) {
+      validator = validator.optional({ values: 'falsy' });
+    }
+  
+    // Trim y sanitización 
+    validator = validator
+      .trim()
+      .toUpperCase()
+      .replace(/\s+/g, '-') // Convierte espacios a guiones
+      .replace(/[^A-Z0-9-]/g, ''); // Solo permite alfanumérico y guiones
+  
+   
+    if (required) {
+      validator = validator
+        .notEmpty()
+        .withMessage('El código del producto es obligatorio');
+    }
+  
+    // Agrega validaciones de formato 
+    validator = validator
+      .isLength({ min: minLength, max: maxLength })
+      .withMessage(
+        `El código debe tener entre ${minLength} y ${maxLength} caracteres`
+      )
+      .matches(/^[A-Z0-9-]+$/)
+      .withMessage('El código solo puede contener letras, números y guiones');
+  
+    return validator;
+  }
 }

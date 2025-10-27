@@ -37,6 +37,10 @@ export default {
 
     async crear(req, res, next) {
         try {
+            const existe = await ProductService.findByCode(req.body.codigo);
+
+            if (existe) throw ApiError.conflict('El producto ya existe');
+
             const nuevoProducto = await ProductService.create(req.body);
 
             sendOk(res, 'Producto registrado exitosamente', nuevoProducto);

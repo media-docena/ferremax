@@ -9,6 +9,7 @@ import {
   validateInt,
   requiredField,
   validateDate,
+  validateCode,
 } from './utils.js';
 import { ESTADOS } from '../utils/constants.js';
 import { addDays } from 'date-fns';
@@ -63,6 +64,13 @@ export const validarProductoEstado = [
  * Validación para crear un producto
  */
 export const validarProductoCrear = [
+  validateCode({
+    location: 'body',
+    required: true,
+    fieldName: 'codigo',
+    maxLength: 50,
+  })(),
+
   requiredField('nombre')(),
   validateString('nombre', 100, true)(),
 
@@ -97,6 +105,13 @@ export const validarProductoCrear = [
  * Validación para editar un producto
  */
 export const validarProductoEditar = [
+
+  validateCode({
+    location: 'body',
+    required: false,
+    fieldName: 'codigo',
+    maxLength: 50,
+  })(),
 
   validateString('nombre', 100)(),
 
