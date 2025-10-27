@@ -22,5 +22,24 @@ export default {
             logger.error('Error al listar ventas', { error });
             next(error);
         }
+    },
+
+    async obtenerTopProductos(req, res, next) {
+        try {
+            const limit = req.query.limit || 3; 
+            const topProductos = await VentaService.getTopProductos(limit);
+
+            if (!topProductos || topProductos.length === 0) throw ApiError.notFound('No se encontraron los productos más vendidos');
+
+            sendOk(
+              res,
+              'Producto(s) más vendido(s) obtenido(s) correctamente',
+              topProductos
+            );
+        } catch (error) {
+            logger.error('Error al obtener top productos más vendidos', { error });
+            next(error);
+        }
     }
+
 }

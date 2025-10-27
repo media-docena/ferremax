@@ -1,9 +1,5 @@
 import { query } from 'express-validator';
-import {
-  validateRequest,
-  sanitizeCharacters,
-  validateDate,
-} from './utils.js';
+import { validateRequest, sanitizeCharacters, validateDate } from './utils.js';
 
 /**
  * Validación para el filtrado de ventas
@@ -41,5 +37,23 @@ export const validarVentaFiltro = [
     .withMessage('El término de forma de pago no puede exceder 100 caracteres'),
 
   // Middleware para procesar los errores
+  validateRequest,
+];
+
+export const validarTopProductosFiltro = [
+  query('limit')
+    .optional()
+    .trim()
+    .notEmpty()
+    .withMessage('El término de limit no puede estar vacío')
+    .customSanitizer(sanitizeCharacters)
+    .isLength({ max: 100 })
+    .withMessage('El término limit no puede exceder 100 caracteres')
+    .isInt({ min: 1, max: 5 })
+    .withMessage('limit debe ser un número entero positivo entre 1 y 5')
+    .toInt(),
+    
+
+
   validateRequest,
 ];
