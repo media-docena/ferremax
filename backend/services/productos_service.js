@@ -1,3 +1,4 @@
+import logger from '../config/logger.js';
 import prisma from '../prisma/prismaClient.js';
 import { ApiError } from '../utils/ApiError.js';
 
@@ -7,25 +8,11 @@ import { ApiError } from '../utils/ApiError.js';
 
 export default {
   async findAll(searchTerm = '') {
-    /**===============================================
-     * Intenta convertir el searchTerm a número
-     * si el término del filtrado es el id del producto
-     *=================================================*/
-    const codigoNumerico =
-      !isNaN(searchTerm) && searchTerm.trim() !== ''
-        ? parseInt(searchTerm, 10)
-        : null;
 
     const whereClause = {
       ...(searchTerm && {
         OR: [
-          ...(codigoNumerico !== null
-            ? [
-                {
-                  idProducto: codigoNumerico,
-                },
-              ]
-            : []),
+          { codigo: { contains: searchTerm } },
           { nombre: { contains: searchTerm } },
           { marca: { nombre: { contains: searchTerm } } },
           { categoria: { nombre: { contains: searchTerm } } },
@@ -59,19 +46,24 @@ export default {
   },
 
   async findById(id) {
-    return await prisma.producto.findUnique({
-      where: { idProducto: id },
-      include: {
-        categoria: true,
-        marca: true,
-        productosunidad: {
-          include: { unidad: true },
+    try {
+      return await prisma.producto.findUnique({
+        where: { idProducto: id },
+        include: {
+          categoria: true,
+          marca: true,
+          productosunidad: {
+            include: { unidad: true },
+          },
+          productoproveedor: {
+            include: { proveedor: true },
+          },
         },
-        productoproveedor: {
-          include: { proveedor: true },
-        },
-      },
-    });
+      });
+    } catch (error) {
+      logger.error('Error al obtener el producto por ID:', error);
+      throw new ApiError(error.status || 500, 'Error al crear el producto');
+    }
   },
 
   async create(data) {
@@ -218,6 +210,20 @@ export default {
       throw ApiError.badRequest('Relación inválida en la actualización');
     }
     throw ApiError.internal('Error al cambiar estado del producto');
+    }
+  },
+
+  async findByCode(codigo) {
+    try {
+      return await prisma.producto.findUnique({
+        where: { codigo: codigo },
+      });
+      
+    } catch (error) {
+      throw new ApiError(
+        error.status || 500,
+        'Error al obtener el producto por código'
+      );
     }
   },
 };

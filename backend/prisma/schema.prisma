@@ -78,6 +78,7 @@ model ProductoProveedor {
 
 model Producto {
   idProducto         Int                 @id @default(autoincrement())
+  codigo             String              @unique @db.VarChar(50)
   nombre             String              @db.VarChar(100)
   descripcion        String?             @db.Text
   precio             Decimal             @db.Decimal(10, 2)
