@@ -17,6 +17,7 @@ CREATE TABLE `DetalleVenta` (
 
     INDEX `idProducto`(`idProducto`),
     INDEX `idVenta`(`idVenta`),
+    UNIQUE INDEX `DetalleVenta_idVenta_idProducto_key`(`idVenta`, `idProducto`),
     PRIMARY KEY (`idDetalleVenta`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -30,7 +31,7 @@ CREATE TABLE `Empleados` (
     `telefono` VARCHAR(20) NULL,
     `estado` ENUM('activo', 'inactivo') NULL DEFAULT 'activo',
     `fechaCreacion` TIMESTAMP(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `fechaActualizacion` TIMESTAMP(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
+    `fechaActualizacion` TIMESTAMP(0) NULL,
 
     UNIQUE INDEX `dni`(`dni`),
     PRIMARY KEY (`idEmpleado`)
@@ -60,12 +61,14 @@ CREATE TABLE `ProductoProveedor` (
 
     INDEX `idProducto`(`idProducto`),
     INDEX `idProveedor`(`idProveedor`),
+    UNIQUE INDEX `ProductoProveedor_idProducto_idProveedor_key`(`idProducto`, `idProveedor`),
     PRIMARY KEY (`idProdProv`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `Productos` (
     `idProducto` INTEGER NOT NULL AUTO_INCREMENT,
+    `codigo` VARCHAR(50) NOT NULL,
     `nombre` VARCHAR(100) NOT NULL,
     `descripcion` TEXT NULL,
     `precio` DECIMAL(10, 2) NOT NULL,
@@ -76,8 +79,9 @@ CREATE TABLE `Productos` (
     `fechaVencimiento` DATE NULL,
     `estado` ENUM('activo', 'inactivo') NULL DEFAULT 'activo',
     `fechaCreacion` TIMESTAMP(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `fechaActualizacion` TIMESTAMP(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
+    `fechaActualizacion` TIMESTAMP(0) NULL,
 
+    UNIQUE INDEX `Productos_codigo_key`(`codigo`),
     INDEX `idCategoria`(`idCategoria`),
     INDEX `idMarca`(`idMarca`),
     PRIMARY KEY (`idProducto`)
@@ -91,6 +95,7 @@ CREATE TABLE `ProductosUnidad` (
 
     INDEX `idProducto`(`idProducto`),
     INDEX `idUnidad`(`idUnidad`),
+    UNIQUE INDEX `ProductosUnidad_idProducto_idUnidad_key`(`idProducto`, `idUnidad`),
     PRIMARY KEY (`idProdUnidad`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -131,7 +136,7 @@ CREATE TABLE `Usuarios` (
     `idEmpleado` INTEGER NULL,
     `estado` ENUM('activo', 'inactivo') NULL DEFAULT 'activo',
     `fechaCreacion` TIMESTAMP(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `fechaActualizacion` TIMESTAMP(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
+    `fechaActualizacion` TIMESTAMP(0) NULL,
 
     UNIQUE INDEX `correo`(`correo`),
     INDEX `idEmpleado`(`idEmpleado`),
@@ -146,6 +151,7 @@ CREATE TABLE `UsuariosRol` (
 
     INDEX `idRol`(`idRol`),
     INDEX `idUsuario`(`idUsuario`),
+    UNIQUE INDEX `UsuariosRol_idUsuario_idRol_key`(`idUsuario`, `idRol`),
     PRIMARY KEY (`idUsuRol`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -158,7 +164,7 @@ CREATE TABLE `Ventas` (
     `idFormaPago` INTEGER NOT NULL,
     `totalVenta` DECIMAL(10, 2) NULL DEFAULT 0.00,
     `fechaCreacion` TIMESTAMP(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `fechaActualizacion` TIMESTAMP(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
+    `fechaActualizacion` TIMESTAMP(0) NULL,
 
     INDEX `idEmpleado`(`idEmpleado`),
     INDEX `idFormaPago`(`idFormaPago`),
@@ -169,10 +175,10 @@ CREATE TABLE `Ventas` (
 ALTER TABLE `DetalleVenta` ADD CONSTRAINT `detalleventa_ibfk_1` FOREIGN KEY (`idVenta`) REFERENCES `Ventas`(`idVenta`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE `DetalleVenta` ADD CONSTRAINT `detalleventa_ibfk_2` FOREIGN KEY (`idProducto`) REFERENCES `Productos`(`idProducto`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `DetalleVenta` ADD CONSTRAINT `detalleventa_ibfk_2` FOREIGN KEY (`idProducto`) REFERENCES `Productos`(`idProducto`) ON DELETE RESTRICT ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE `ProductoProveedor` ADD CONSTRAINT `productoproveedor_ibfk_1` FOREIGN KEY (`idProducto`) REFERENCES `Productos`(`idProducto`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `ProductoProveedor` ADD CONSTRAINT `productoproveedor_ibfk_1` FOREIGN KEY (`idProducto`) REFERENCES `Productos`(`idProducto`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE `ProductoProveedor` ADD CONSTRAINT `productoproveedor_ibfk_2` FOREIGN KEY (`idProveedor`) REFERENCES `Proveedor`(`idProveedor`) ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -184,7 +190,7 @@ ALTER TABLE `Productos` ADD CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`idCatego
 ALTER TABLE `Productos` ADD CONSTRAINT `productos_ibfk_2` FOREIGN KEY (`idMarca`) REFERENCES `Marca`(`idMarca`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE `ProductosUnidad` ADD CONSTRAINT `productosunidad_ibfk_1` FOREIGN KEY (`idProducto`) REFERENCES `Productos`(`idProducto`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `ProductosUnidad` ADD CONSTRAINT `productosunidad_ibfk_1` FOREIGN KEY (`idProducto`) REFERENCES `Productos`(`idProducto`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE `ProductosUnidad` ADD CONSTRAINT `productosunidad_ibfk_2` FOREIGN KEY (`idUnidad`) REFERENCES `Unidad`(`idUnidad`) ON DELETE NO ACTION ON UPDATE NO ACTION;
