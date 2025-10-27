@@ -1,5 +1,5 @@
 // middlewares/utils.js
-import { validationResult, param, body } from 'express-validator';
+import { validationResult, param, body, query } from 'express-validator';
 import { ApiError } from '../utils/ApiError.js';
 import {
   parse,
@@ -169,6 +169,7 @@ function parseUserDate(dateString) {
  * @param {string|Date|null} [options.maxDate=null] - Fecha máxima permitida.
  * @param {boolean} [options.allowPast=true] - Si `false`, no se permiten fechas anteriores al día actual.
  * @param {boolean} [options.allowFuture=true] - Si `false`, no se permiten fechas posteriores al día actual.
+ * @param {string} [options.location='body'] - Ubicación del campo en la request: 'body', 'query' o 'param'.
  * 
  * @returns {Function} Middleware de validación compatible con `express-validator`
  *                     que se aplica sobre el campo especificado.
@@ -192,13 +193,22 @@ export function validateDate(field, options = {}) {
     minDate = null,
     maxDate = null,
     allowPast = true,
-    allowFuture = true
+    allowFuture = true,
+    location = 'body',
   } = options;
 
   return () => {
     const name = displayName || field;
 
-    return body(field)
+    // Selecciona la función de validación según la ubicación
+    const validator = location === 'query' 
+      ? query(field) 
+      : location === 'param' 
+        ? param(field) 
+        : body(field);
+
+
+    return validator
       .trim()
       // Parsea y convierte a yyyy-mm-dd
       .customSanitizer((value) => {
