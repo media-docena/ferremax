@@ -344,3 +344,107 @@ export function validateCode(options = {}) {
     return validator;
   }
 }
+
+/**
+ * Validador para contraseñas
+ * @param {string} field - Nombre del campo (default: 'password')
+ * @param {boolean} required - Si el campo es obligatorio (default: true)
+ * @param {number} minLength - Longitud mínima (default: 8)
+ * @param {number} maxLength - Longitud máxima (default: 255)
+ * @returns {Function} Middleware de validación
+ */
+export function validatePassword(field = 'password', required = true, minLength = 8, maxLength = 255) {
+  return () => {
+    let chain = body(field);
+
+    if (!required) {
+      chain = chain.optional({ values: 'falsy' });
+    }
+
+    chain = chain
+      .isString()
+      .withMessage(`${field} debe ser texto`)
+      .trim()
+      .notEmpty()
+      .withMessage(`${field} no puede estar vacío`)
+      .isLength({ min: minLength, max: maxLength })
+      .withMessage(`${field} debe tener entre ${minLength} y ${maxLength} caracteres`);
+
+
+    return chain;
+  };
+}
+
+/**
+ * Validador para números de teléfono
+ * @param {string} field - Nombre del campo (default: 'telefono')
+ * @param {boolean} required - Si el campo es obligatorio (default: false)
+ * @param {number} minLength - Longitud mínima (default: 7)
+ * @param {number} maxLength - Longitud máxima (default: 20)
+ * @returns {Function} Middleware de validación
+ */
+export function validatePhone(field = 'telefono', required = false, minLength = 7, maxLength = 20) {
+  return () => {
+    let chain = body(field);
+
+    if (!required) {
+      chain = chain.optional({ values: 'falsy' });
+    }
+
+    chain = chain
+      .isString()
+      .withMessage(`${field} debe ser texto`)
+      .trim()
+      .notEmpty()
+      .withMessage(`${field} no puede estar vacío`)
+      .isLength({ min: minLength, max: maxLength })
+      .withMessage(
+        `${field} debe tener entre ${minLength} y ${maxLength} caracteres`
+      )
+      .matches(/^[0-9\s+()-]+$/)
+      .withMessage(`${field} tiene un formato inválido`);
+
+    return chain;
+  };
+}
+
+/**
+ * Validador para DNI/Documento de identidad
+ * @param {string} field - Nombre del campo (default: 'dni')
+ * @param {boolean} required - Si el campo es obligatorio (default: true)
+ * @param {number} minLength - Longitud mínima (default: 7)
+ * @param {number} maxLength - Longitud máxima (default: 20)
+ * @param {boolean} numericOnly - Si solo acepta números (default: true)
+ * @returns {Function} Middleware de validación
+ */
+export function validateDNI(field = 'dni', required = true, minLength = 7, maxLength = 20, numericOnly = true) {
+  return () => {
+    let chain = body(field);
+
+    if (!required) {
+      chain = chain.optional({ values: 'falsy' });
+    }
+
+    chain = chain
+      .isString()
+      .withMessage(`${field} debe ser texto`)
+      .trim()
+      .notEmpty()
+      .withMessage(`${field} no puede estar vacío`)
+      .isLength({ min: minLength, max: maxLength })
+      .withMessage(`${field} debe tener entre ${minLength} y ${maxLength} caracteres`);
+
+    if (numericOnly) {
+      chain = chain
+        .matches(/^[0-9]+$/)
+        .withMessage(`${field} solo puede contener números`);
+    } else {
+      // Permite letras y números (para documentos como pasaportes)
+      chain = chain
+        .matches(/^[A-Z0-9]+$/i)
+        .withMessage(`${field} solo puede contener letras y números`);
+    }
+
+    return chain;
+  };
+}
