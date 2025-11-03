@@ -1,0 +1,1227 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "FerreMax REST API",
+    "version": "1.0.0",
+    "description": "API para gestión de ferretería FerreMax que incluye \n        módulos de control de stock, ventas, usuarios, proveedores y reportes",
+    "contact": {
+      "name": "Media Docena Solutions Team",
+      "email": "contact@ferremax.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000/api/v1",
+      "description": "local server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Authentication related operations"
+    },
+    {
+      "name": "Categorias",
+      "description": "Operations about product categories"
+    },
+    {
+      "name": "Marcas",
+      "description": "Operations about product brands"
+    },
+    {
+      "name": "Productos",
+      "description": "Operations about products"
+    },
+    {
+      "name": "Proveedores",
+      "description": "Operations about suppliers"
+    },
+    {
+      "name": "Roles",
+      "description": "Operations about user roles"
+    },
+    {
+      "name": "Unidades",
+      "description": "Operations about product units"
+    },
+    {
+      "name": "Usuarios",
+      "description": "Operations about users"
+    },
+    {
+      "name": "Ventas",
+      "description": "Operations about sales"
+    }
+  ],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User login",
+        "description": "Logs a user into the system and returns a JWT token.",
+        "operationId": "loginUser",
+        "requestBody": {
+          "description": "User credentials for login",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "correo": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "user@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "password123"
+                  }
+                },
+                "required": ["correo", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful login",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                      "description": "JWT token for authentication"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid credentials"
+          },
+          "401": {
+            "descripcion": "Unauthorized - Invalid or missing token"
+          }
+        }
+      }
+    },
+    "/categorias": {
+      "get": {
+        "tags": ["Categorias"],
+        "summary": "Get all categories",
+        "description": "Returns a list of all product categories. Requires authentication.",
+        "operationId": "getCategorias",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Categoria"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "descripcion": "Unauthorized - Invalid or missing token"
+          }
+        }
+      }
+    },
+    "/marcas": {
+      "get": {
+        "tags": ["Marcas"],
+        "summary": "Get all brands",
+        "description": "Returns a list of all product brands. Requires authentication.",
+        "operationId": "getMarcas",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Marca"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "descripcion": "Unauthorized - Invalid or missing token"
+          }
+        }
+      }
+    },
+    "/productos": {
+      "get": {
+        "tags": ["Productos"],
+        "summary": "Get all products",
+        "description": "Returns a list of all products, with optional filtering. Requires authentication",
+        "operationId": "getProductos",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "nombre",
+            "in": "query",
+            "description": "Filter products by name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "categoriaId",
+            "in": "query",
+            "description": "Filter products by category ID",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Producto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "descripcion":"Unauthorized - Invalid or missing token"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Productos"],
+        "summary": "Create a new product",
+        "description": "Creates a new product in the store. Requires admin or encargado role.",
+        "operationId": "createProducto",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Product object to be created",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductoCrear"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Product created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Producto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "descripcion":"Unauthorized - Invalid or missing token"
+          },
+          "403": {
+            "description": "Forbidden - User does not have required role"
+          }
+        }
+      }
+    },
+    "/productos/{id}": {
+      "get": {
+        "tags": ["Productos"],
+        "summary": "Get product by ID",
+        "description": "Returns a single product by its ID.",
+        "operationId": "getProductoById",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the product to retrieve",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Producto"
+                }
+              }
+            }
+          },
+          "401": {
+            "descripcion":"Unauthorized - Invalid or missing token"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Productos"],
+        "summary": "Update a product by ID",
+        "description": "Updates an existing product by its ID. Requires admin or encargado role.",
+        "operationId": "updateProducto",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the product to update",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Product object with updated fields",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductoEditar"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Product updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Producto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "descripcion":"Unauthorized - Invalid or missing token"
+          },
+          "403": {
+            "description": "Forbidden - User does not have required role"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        }
+      }
+    },
+    "/productos/{id}/estado": {
+      "patch": {
+        "tags": ["Productos"],
+        "summary": "Change product status by ID",
+        "description": "Changes the status of an existing product by its ID. Requires admin or encargado role.",
+        "operationId": "changeProductoEstado",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the product to change status",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "New status for the product",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "estado": {
+                    "type": "string",
+                    "example": "inactivo"
+                  }
+                },
+                "required": ["estado"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Product status updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Producto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "descripcion":"Unauthorized - Invalid or missing token"
+          },
+          "403": {
+            "description": "Forbidden - User does not have required role"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        }
+      }
+    },
+    "/proveedores": {
+      "get": {
+        "tags": ["Proveedores"],
+        "summary": "Get all suppliers",
+        "description": "Returns a list of all suppliers. Requires authentication",
+        "operationId": "getProveedores",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Proveedor"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "descripcion":"Unauthorized - Invalid or missing token"
+          }
+        }
+      }
+    },
+    "/roles": {
+      "get": {
+        "tags": ["Roles"],
+        "summary": "Get all roles",
+        "description": "Returns a list of all user roles. Requires authentication.",
+        "operationId": "getRoles",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Rol"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "descripcion":"Unauthorized - Invalid or missing token"
+          }
+        }
+      }
+    },
+    "/unidades": {
+      "get": {
+        "tags": ["Unidades"],
+        "summary": "Get all units",
+        "description": "Returns a list of all product units. Requires authentication.",
+        "operationId": "getUnidades",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Unidad"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "descripcion":"Unauthorized - Invalid or missing token"
+          }
+        }
+      }
+    },
+    "/usuarios": {
+      "get": {
+        "tags": ["Usuarios"],
+        "summary": "Get all users",
+        "description": "Returns a list of all users. Requires admin role.",
+        "operationId": "getUsuarios",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Usuario"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "descripcion":"Unauthorized - Invalid or missing token"
+          },
+          "403": {
+            "description": "Forbidden - User does not have required role"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Usuarios"],
+        "summary": "Create a new user",
+        "description": "Creates a new user. Requires admin role.",
+        "operationId": "createUsuario",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "User object to be created",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UsuarioCrear"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usuario"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "descripcion":"Unauthorized - Invalid or missing token"
+          },
+          "403": {
+            "description": "Forbidden - User does not have required role"
+          }
+        }
+      }
+    },
+    "/usuarios/{id}": {
+      "get": {
+        "tags": ["Usuarios"],
+        "summary": "Get user by ID",
+        "description": "Returns a single user by their ID. Requires admin role.",
+        "operationId": "getUsuarioById",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the user to retrieve",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usuario"
+                }
+              }
+            }
+          },
+          "401": {
+            "descripcion":"Unauthorized - Invalid or missing token"
+          },
+          "403": {
+            "description": "Forbidden - User does not have required role"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Usuarios"],
+        "summary": "Update a user by ID",
+        "description": "Updates an existing user by their ID. Requires admin role.",
+        "operationId": "updateUsuario",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the user to update",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "User object with updated fields",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UsuarioEditar"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usuario"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "descripcion":"Unauthorized - Invalid or missing token"
+          },
+          "403": {
+            "description": "Forbidden - User does not have required role"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/usuarios/{id}/estado": {
+      "patch": {
+        "tags": ["Usuarios"],
+        "summary": "Change user status by ID",
+        "description": "Changes the status of an existing user by their ID. Requires admin role.",
+        "operationId": "changeUsuarioEstado",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the user to change status",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "New status for the user",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "estado": {
+                    "type": "string",
+                    "example": "inactivo"
+                  }
+                },
+                "required": ["estado"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User status updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usuario"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "descripcion":"Unauthorized - Invalid or missing token"
+          },
+          "403": {
+            "description": "Forbidden - User does not have required role"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/ventas": {
+      "get": {
+        "tags": ["Ventas"],
+        "summary": "Get all sales",
+        "description": "Returns a list of all sales, with optional filtering. Requires admin or encargado role.",
+        "operationId": "getVentas",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "fechaInicio",
+            "in": "query",
+            "description": "Filter sales by start date (YYYY-MM-DD)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "fechaFin",
+            "in": "query",
+            "description": "Filter sales by end date (YYYY-MM-DD)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Venta"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "descripcion":"Unauthorized - Invalid or missing token"
+          },
+          "403": {
+            "description": "Forbidden - User does not have required role"
+          }
+        }
+      }
+    },
+    "/ventas/stats/top-productos": {
+      "get": {
+        "tags": ["Ventas"],
+        "summary": "Get top selling products",
+        "description": "Returns a list of top selling products based on quantity sold, with optional date filtering. Requires admin or encargado role.",
+        "operationId": "getTopProductos",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Limit the number of top products returned",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 5
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TopProducto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "descripcion": "Unauthorized - Invalid or missing token"
+          },
+          "403": {
+            "description": "Forbidden - User does not have required role"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Categoria": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "nombre": {
+            "type": "string",
+            "example": "Herramientas"
+          }
+        }
+      },
+      "Marca": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "nombre": {
+            "type": "string",
+            "example": "Bosch"
+          }
+        }
+      },
+      "Unidad": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "nombre": {
+            "type": "string",
+            "example": "Unidad"
+          }
+        }
+      },
+      "Proveedor": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "nombre": {
+            "type": "string",
+            "example": "Ferreteria Central"
+          }
+        }
+      },
+      "Rol": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "nombre": {
+            "type": "string",
+            "example": "admin"
+          }
+        }
+      },
+      "Producto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "nombre": {
+            "type": "string",
+            "example": "Martillo"
+          },
+          "descripcion": {
+            "type": "string",
+            "example": "Martillo de uña de 16 oz"
+          },
+          "precio": {
+            "type": "number",
+            "format": "float",
+            "example": 15.99
+          },
+          "stock": {
+            "type": "integer",
+            "example": 100
+          },
+          "estado": {
+            "type": "string",
+            "example": "inactivo"
+          },
+          "categoriaId": {
+            "type": "integer",
+            "example": 1
+          },
+          "marcaId": {
+            "type": "integer",
+            "example": 1
+          },
+          "unidadId": {
+            "type": "integer",
+            "example": 1
+          },
+          "proveedorId": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "ProductoCrear": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "example": "Martillo"
+          },
+          "descripcion": {
+            "type": "string",
+            "example": "Martillo de uña de 16 oz"
+          },
+          "precio": {
+            "type": "number",
+            "format": "float",
+            "example": 15.99
+          },
+          "stock": {
+            "type": "integer",
+            "example": 100
+          },
+          "categoriaId": {
+            "type": "integer",
+            "example": 1
+          },
+          "marcaId": {
+            "type": "integer",
+            "example": 1
+          },
+          "unidadId": {
+            "type": "integer",
+            "example": 1
+          },
+          "proveedorId": {
+            "type": "integer",
+            "example": 1
+          }
+        },
+        "required": [
+          "nombre",
+          "precio",
+          "stock",
+          "categoriaId",
+          "marcaId",
+          "unidadId",
+          "proveedorId"
+        ]
+      },
+      "ProductoEditar": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "example": "Martillo mejorado"
+          },
+          "descripcion": {
+            "type": "string",
+            "example": "Martillo de uña de 20 oz"
+          },
+          "precio": {
+            "type": "number",
+            "format": "float",
+            "example": 18.5
+          },
+          "stock": {
+            "type": "integer",
+            "example": 120
+          },
+          "categoriaId": {
+            "type": "integer",
+            "example": 2
+          },
+          "marcaId": {
+            "type": "integer",
+            "example": 2
+          },
+          "unidadId": {
+            "type": "integer",
+            "example": 2
+          },
+          "proveedorId": {
+            "type": "integer",
+            "example": 2
+          }
+        }
+      },
+      "Usuario": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "nombre": {
+            "type": "string",
+            "example": "Juan"
+          },
+          "apellido": {
+            "type": "string",
+            "example": "Perez"
+          },
+          "correo": {
+            "type": "string",
+            "format": "email",
+            "example": "juan.perez@example.com"
+          },
+          "rolId": {
+            "type": "integer",
+            "example": 1
+          },
+          "estado": {
+            "type": "string",
+            "example": "activo"
+          }
+        }
+      },
+      "UsuarioCrear": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "example": "Juan"
+          },
+          "apellido": {
+            "type": "string",
+            "example": "Perez"
+          },
+          "correo": {
+            "type": "string",
+            "format": "email",
+            "example": "juan.perez@example.com"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "example": "securepassword"
+          },
+          "rolId": {
+            "type": "integer",
+            "example": 1
+          }
+        },
+        "required": ["nombre", "apellido", "correo", "password", "rolId"]
+      },
+      "UsuarioEditar": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "example": "Juan Carlos"
+          },
+          "apellido": {
+            "type": "string",
+            "example": "Perez Garcia"
+          },
+          "correo": {
+            "type": "string",
+            "format": "email",
+            "example": "juan.carlos.perez@example.com"
+          },
+          "rolId": {
+            "type": "integer",
+            "example": 2
+          }
+        }
+      },
+      "Venta": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "fecha": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-11-03T10:00:00Z"
+          },
+          "total": {
+            "type": "number",
+            "format": "float",
+            "example": 150.75
+          },
+          "usuarioId": {
+            "type": "integer",
+            "example": 1
+          },
+          "detalles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VentaDetalle"
+            }
+          }
+        }
+      },
+      "VentaDetalle": {
+        "type": "object",
+        "properties": {
+          "productoId": {
+            "type": "integer",
+            "example": 1
+          },
+          "cantidad": {
+            "type": "integer",
+            "example": 2
+          },
+          "precioUnitario": {
+            "type": "number",
+            "format": "float",
+            "example": 15.99
+          }
+        }
+      },
+      "TopProducto": {
+        "type": "object",
+        "properties": {
+          "productoId": {
+            "type": "integer",
+            "example": 1
+          },
+          "nombreProducto": {
+            "type": "string",
+            "example": "Martillo"
+          },
+          "cantidadVendida": {
+            "type": "integer",
+            "example": 50
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

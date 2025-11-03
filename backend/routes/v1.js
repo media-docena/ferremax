@@ -10,6 +10,9 @@ import marcasRouter from './marcas_routes.js'
 import rolesRouter from './roles_routes.js'
 import unidadesRouter from './unidades_routes.js'
 import { verifyToken } from '../middlewares/auth_middlewares.js';
+import swaggerUI from 'swagger-ui-express';
+import { swaggerOptions } from '../swagger/swagger.js';
+import swaggerDoc from '../swagger/openapi.json' with { type: 'json' };
 
 const v1Router = Router();
 
@@ -18,6 +21,9 @@ const v1Router = Router();
 // Rutas públicas
 v1Router.use('/', indexRouter);
 v1Router.use('/auth', authRouter);
+
+// Documentación de Swagger
+v1Router.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc, swaggerOptions))
 
 // Middleware de validación de token
 v1Router.use(verifyToken);
@@ -31,4 +37,5 @@ v1Router.use('/categorias', categoriasRouter);
 v1Router.use('/marcas', marcasRouter);
 v1Router.use('/roles', rolesRouter);
 v1Router.use('/unidades', unidadesRouter);
+
 export default v1Router;
