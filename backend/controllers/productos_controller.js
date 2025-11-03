@@ -1,5 +1,5 @@
 import ProductService from '../services/productos_service.js';
-import { sendOk } from '../utils/ResponseHelper.js';
+import { sendOk, sendCreated } from '../utils/ResponseHelper.js';
 import { ApiError } from '../utils/ApiError.js';
 import logger from '../config/logger.js';
 import { obtenerMensajeEstado } from './utils.js';
@@ -43,7 +43,7 @@ export default {
 
             const nuevoProducto = await ProductService.create(req.body);
 
-            sendOk(res, 'Producto registrado exitosamente', nuevoProducto);
+            sendCreated(res, 'Producto registrado exitosamente', nuevoProducto);
             
         } catch (error) {
             logger.error('Error al obtener detalle un producto por ID', { error });
