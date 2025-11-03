@@ -25,7 +25,6 @@ export default {
   async findById(id) {
     try {
       return await prisma.usuario.findUnique({
-        omit: { password: true },
         where: { idUsuario: id },
         include: {
           empleado: true,
@@ -44,7 +43,6 @@ export default {
   async findByEmail(email) {
     try {
       return await prisma.usuario.findUnique({
-        omit: { password: true },
         where: { correo: email },
         include: {
           empleado: true,

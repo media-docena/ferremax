@@ -7,18 +7,22 @@ import {
   validarProductoCrear,
   validarProductoEditar,
 } from '../middlewares/productos_validations.js';
+import { authorizeRole } from '../middlewares/auth_middlewares.js';
 
 
 const router = Router();
+
+// Middleware para autorizar acceso a rutas de usuarios
+const soloAdminEncargado = authorizeRole('admin', 'encargado');
 
 router.get('/', validarProductoFiltro, controller.listar);
 
 router.get('/:id', validarProductoId, controller.obtenerPorId);
 
-router.post('/', validarProductoCrear, controller.crear);
+router.post('/', soloAdminEncargado, validarProductoCrear, controller.crear);
 
-router.put('/:id', validarProductoId, validarProductoEditar, controller.actualizar);
+router.put('/:id', soloAdminEncargado, validarProductoId, validarProductoEditar, controller.actualizar);
 
-router.patch('/:id/estado', validarProductoEstado, controller.cambiarEstado);
+router.patch('/:id/estado', soloAdminEncargado, validarProductoEstado, controller.cambiarEstado);
 
 export default router;
