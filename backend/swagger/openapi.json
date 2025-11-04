@@ -219,7 +219,7 @@
             }
           },
           "401": {
-            "descripcion":"Unauthorized - Invalid or missing token"
+            "descripcion": "Unauthorized - Invalid or missing token"
           }
         }
       },
@@ -259,7 +259,7 @@
             "description": "Invalid input"
           },
           "401": {
-            "descripcion":"Unauthorized - Invalid or missing token"
+            "descripcion": "Unauthorized - Invalid or missing token"
           },
           "403": {
             "description": "Forbidden - User does not have required role"
@@ -301,7 +301,7 @@
             }
           },
           "401": {
-            "descripcion":"Unauthorized - Invalid or missing token"
+            "descripcion": "Unauthorized - Invalid or missing token"
           },
           "404": {
             "description": "Product not found"
@@ -355,7 +355,7 @@
             "description": "Invalid input"
           },
           "401": {
-            "descripcion":"Unauthorized - Invalid or missing token"
+            "descripcion": "Unauthorized - Invalid or missing token"
           },
           "403": {
             "description": "Forbidden - User does not have required role"
@@ -421,13 +421,48 @@
             "description": "Invalid input"
           },
           "401": {
-            "descripcion":"Unauthorized - Invalid or missing token"
+            "descripcion": "Unauthorized - Invalid or missing token"
           },
           "403": {
             "description": "Forbidden - User does not have required role"
           },
           "404": {
             "description": "Product not found"
+          }
+        }
+      }
+    },
+    "/productos/exportar/csv": {
+      "get": {
+        "tags": ["Productos"],
+        "summary": "Export products to CSV",
+        "description": "Exports the product inventory to a CSV file. Requires admin or encargado role.",
+        "operationId": "exportProductosCSV",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CSV file generated successfully",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing token"
+          },
+          "403": {
+            "description": "Forbidden - User does not have required role"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       }
@@ -458,7 +493,7 @@
             }
           },
           "401": {
-            "descripcion":"Unauthorized - Invalid or missing token"
+            "descripcion": "Unauthorized - Invalid or missing token"
           }
         }
       }
@@ -489,7 +524,7 @@
             }
           },
           "401": {
-            "descripcion":"Unauthorized - Invalid or missing token"
+            "descripcion": "Unauthorized - Invalid or missing token"
           }
         }
       }
@@ -520,7 +555,7 @@
             }
           },
           "401": {
-            "descripcion":"Unauthorized - Invalid or missing token"
+            "descripcion": "Unauthorized - Invalid or missing token"
           }
         }
       }
@@ -551,7 +586,7 @@
             }
           },
           "401": {
-            "descripcion":"Unauthorized - Invalid or missing token"
+            "descripcion": "Unauthorized - Invalid or missing token"
           },
           "403": {
             "description": "Forbidden - User does not have required role"
@@ -594,7 +629,7 @@
             "description": "Invalid input"
           },
           "401": {
-            "descripcion":"Unauthorized - Invalid or missing token"
+            "descripcion": "Unauthorized - Invalid or missing token"
           },
           "403": {
             "description": "Forbidden - User does not have required role"
@@ -636,7 +671,7 @@
             }
           },
           "401": {
-            "descripcion":"Unauthorized - Invalid or missing token"
+            "descripcion": "Unauthorized - Invalid or missing token"
           },
           "403": {
             "description": "Forbidden - User does not have required role"
@@ -693,7 +728,7 @@
             "description": "Invalid input"
           },
           "401": {
-            "descripcion":"Unauthorized - Invalid or missing token"
+            "descripcion": "Unauthorized - Invalid or missing token"
           },
           "403": {
             "description": "Forbidden - User does not have required role"
@@ -759,7 +794,7 @@
             "description": "Invalid input"
           },
           "401": {
-            "descripcion":"Unauthorized - Invalid or missing token"
+            "descripcion": "Unauthorized - Invalid or missing token"
           },
           "403": {
             "description": "Forbidden - User does not have required role"
@@ -818,7 +853,7 @@
             }
           },
           "401": {
-            "descripcion":"Unauthorized - Invalid or missing token"
+            "descripcion": "Unauthorized - Invalid or missing token"
           },
           "403": {
             "description": "Forbidden - User does not have required role"

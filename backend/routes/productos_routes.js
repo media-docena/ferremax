@@ -15,6 +15,8 @@ const router = Router();
 // Middleware para autorizar acceso a rutas de usuarios
 const soloAdminEncargado = authorizeRole('admin', 'encargado');
 
+router.get('/exportar/csv', soloAdminEncargado, controller.exportarCSV);
+
 router.get('/', validarProductoFiltro, controller.listar);
 
 router.get('/:id', validarProductoId, controller.obtenerPorId);

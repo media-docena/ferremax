@@ -1,6 +1,8 @@
-import logger from '../config/logger.js';
 import prisma from '../prisma/prismaClient.js';
+import logger from '../config/logger.js';
 import { ApiError } from '../utils/ApiError.js';
+import { Parser } from '@json2csv/plainjs';
+import { CAMPOS } from '../utils/constants.js';
 
 /**
  * Servicio para gestionar operaciones CRUD de Productos
@@ -8,7 +10,6 @@ import { ApiError } from '../utils/ApiError.js';
 
 export default {
   async findAll(searchTerm = '') {
-
     const whereClause = {
       ...(searchTerm && {
         OR: [
@@ -68,7 +69,8 @@ export default {
 
   async create(data) {
     try {
-      const { idProveedor, idUnidad, idCategoria, idMarca, ...productData } = data;
+      const { idProveedor, idUnidad, idCategoria, idMarca, ...productData } =
+        data;
 
       const createData = {
         ...productData,
@@ -112,10 +114,7 @@ export default {
         },
       });
     } catch (error) {
-      throw new ApiError(
-        error.status || 500,
-        'Error al crear el producto'
-      );
+      throw new ApiError(error.status || 500, 'Error al crear el producto');
     }
   },
 
@@ -169,14 +168,12 @@ export default {
         data: updateData,
         include: {
           productoproveedor: true,
-          productosunidad: true,  
+          productosunidad: true,
           categoria: true,
           marca: true,
         },
       });
-
     } catch (error) {
-
       if (error.code === 'P2025') {
         throw ApiError.notFound('Producto no encontrado');
       }
@@ -199,17 +196,15 @@ export default {
         data: { estado: status },
         select: { idProducto: true, nombre: true, estado: true },
       });
-      
     } catch (error) {
-      
       if (error.code === 'P2025') {
         throw ApiError.notFound('Producto no encontrado para actualizar');
       }
 
       if (error.code === 'P2003') {
-      throw ApiError.badRequest('Relación inválida en la actualización');
-    }
-    throw ApiError.internal('Error al cambiar estado del producto');
+        throw ApiError.badRequest('Relación inválida en la actualización');
+      }
+      throw ApiError.internal('Error al cambiar estado del producto');
     }
   },
 
@@ -218,11 +213,64 @@ export default {
       return await prisma.producto.findUnique({
         where: { codigo: codigo },
       });
-      
     } catch (error) {
       throw new ApiError(
         error.status || 500,
         'Error al obtener el producto por código'
+      );
+    }
+  },
+  /**
+   * Exporta el listado de productos a formato CSV
+   *
+   * NOTA IMPORTANTE: Este endpoint funciona correctamente pero NO debe probarse
+   * desde Swagger UI debido a limitaciones en el manejo de encoding UTF-8.
+   *
+   * Para probar este endpoint usá:
+   * - curl: curl -H "Authorization: Bearer TOKEN" http://localhost:5000/api/v1/productos/exportar/csv -o inventario.csv
+   * - HTTPie: http GET http://localhost:5000/api/v1/productos/exportar/csv "Authorization:Bearer TOKEN" > inventario.csv
+   * - Postman: Send & Download
+   * - Frontend: fetch() con response.blob()
+   *
+   * El archivo generado incluye BOM UTF-8 para correcta visualización de
+   * caracteres especiales (á, é, í, ó, ú, ñ) en Excel.
+   *
+   * @returns {Promise<string>} CSV string con BOM UTF-8
+   */
+  async exportToCSV() {
+    try {
+      const productos = await prisma.producto.findMany({
+        include: {
+          categoria: true,
+          marca: true,
+          productoproveedor: {
+            include: {
+              proveedor: true,
+            },
+          },
+          productosunidad: {
+            include: {
+              unidad: true,
+            },
+          },
+        },
+      });
+
+      // Configura el parser con delimitador para Excel en español
+      const json2csvParser = new Parser({
+        fields: CAMPOS,
+        delimiter: ';',
+        withBOM: true, // UTF-8 BOM para acentos y ñ
+        quote: '"',
+        header: true,
+      });
+
+      return json2csvParser.parse(productos);
+    } catch (error) {
+      logger.error('Error al exportar el listado de productos a CSV:', error);
+      throw new ApiError(
+        error.status || 500,
+        `Error al exportar el listado de productos a CSV ${error.message}`
       );
     }
   },
