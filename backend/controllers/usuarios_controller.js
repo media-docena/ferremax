@@ -44,7 +44,7 @@ export default {
       if (!usuarioActualizado)
         throw ApiError.notFound('Usuario no encontrado para actualizar estado');
 
-      const mensaje = obtenerMensajeEstado(estado, 'Producto');
+      const mensaje = obtenerMensajeEstado(estado, 'Usuario');
 
       sendOk(res, mensaje, usuarioActualizado);
     } catch (error) {
