@@ -1,8 +1,8 @@
 import React from 'react';
 import { createBrowserRouter } from 'react-router';
-import authMiddleware from './Middlewares/authMiddleware';
-import Login from './pages/Login/Login';
+import { authMiddleware, roleMiddleware } from './Middlewares/authMiddleware';
 import Layout from './Layout';
+import Login from './pages/Login/Login';
 import Home from './pages/Home/Home';
 import UsuariosList from './pages/Usuarios/UsuariosList';
 import UsuarioCrear from './pages/Usuarios/UsuarioCrear';
@@ -17,17 +17,24 @@ import VentasFactura from './pages/Ventas/VentasFactura';
 import ReportesList from './pages/Reportes/ReportesList';
 import Documentacion from './pages/Documentacion/Documentacion';
 import ErrorPage from './pages/Error/ErrorPage';
-
+import { layoutLoader } from './api/loaders/layoutLoaders';
+import { usuariosLoader } from './api/loaders/usuariosLoaders';
+import { loginAction, logoutAction } from './api/actions/authActions';
+import { changeUsuarioStatusAction } from './api/actions/usuariosActions';
 
 const router = createBrowserRouter([
+  // Rutas públicas
   {
     path: '/login',
     Component: Login,
     errorElement: <ErrorPage />,
+    action: loginAction,
   },
+  // Rutas privadas
   {
     path: '/',
     middleware: [authMiddleware],
+    loader: layoutLoader,
     Component: Layout,
     errorElement: <ErrorPage />,
     children: [
@@ -48,21 +55,39 @@ const router = createBrowserRouter([
       },
       {
         path: 'usuarios',
+        middleware: [roleMiddleware(['admin'])],
         children: [
-          { index: true, Component: UsuariosList },
+          { index: true, loader: usuariosLoader, Component: UsuariosList,},
           { path: ':usuarioId', Component: UsuarioDetalle },
           { path: ':usuarioId/editar', Component: UsuarioEditar },
+          {
+            path: ':usuarioId/estado',
+            action: changeUsuarioStatusAction,
+          },
           { path: 'crear', Component: UsuarioCrear },
         ],
       },
-      { path: 'ventas',
+      {
+        path: 'ventas',
         children: [
           { index: true, Component: VentasList },
           { path: 'factura', Component: VentasFactura },
         ],
       },
-      { path: 'reportes', Component: ReportesList },
-      { path: 'documentacion', Component: Documentacion },
+      {
+        path: 'reportes',
+        middleware: [roleMiddleware(['admin', 'encargado'])],
+        Component: ReportesList,
+      },
+      {
+        path: 'documentacion',
+        middleware: [roleMiddleware(['admin'])],
+        Component: Documentacion,
+      },
+      {
+        path: '/logout',
+        action: logoutAction,
+      },
     ],
   },
 ]);
