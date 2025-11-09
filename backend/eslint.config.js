@@ -10,6 +10,8 @@ export default defineConfig([
     rules: {
       quotes: ['error', 'single'], // 👈 fuerza uso de comillas simples
     },
-    languageOptions: { globals: globals.node },
+    languageOptions: { globals: {
+      ...globals.node, 
+      ...globals.jest} },
   },
 ]);
