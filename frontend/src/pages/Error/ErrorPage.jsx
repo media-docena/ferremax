@@ -24,12 +24,12 @@ export default function ErrorPage() {
     401: {
       title: 'No autorizado',
       description:
-        'Tu sesión ha expirado o no tienes permisos para acceder a este recurso.',
+        'Tu sesión ha expirado o no tenés permisos para acceder a este recurso.',
       statusDisplay: '401',
     },
     403: {
       title: 'Acceso prohibido',
-      description: 'No tienes permisos para acceder a este recurso.',
+      description: 'No tenés permisos para acceder a este recurso.',
       statusDisplay: '403',
     },
     500: {
@@ -52,8 +52,8 @@ export default function ErrorPage() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    navigate('/auth/login');
+    localStorage.removeItem('token');
+    navigate('/login');
   };
 
   return (
@@ -84,7 +84,7 @@ export default function ErrorPage() {
           {message && message !== 'unknown' && (
             // Mantenemos el estilo de error técnico
             <div className='bg-red-100 border border-red-300 rounded-lg p-4 md:p-6 mb-8 md:mb-10'>
-              <p className='text-red-700 text-sm md:text-base font-mono break-words'>
+              <p className='text-red-700 text-sm md:text-base font-mono break-words text-center'>
                 {message}
               </p>
             </div>

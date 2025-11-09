@@ -1,3 +1,8 @@
+/**
+ * Capitaliza la primera letra de un string
+ * @param {string} word - String a capitalizar
+ * @returns {string} - String capitalizado
+ */
 function capitalizeFirstLetter(word) {
   if (typeof word !== 'string' || word.length === 0) {
     return '';

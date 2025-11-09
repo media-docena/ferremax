@@ -1,6 +1,7 @@
 import axiosInstance from '../axiosConfig';
-import { endpoints } from './endpoints';
-import logger from '../config/logger';
+import { endpoints } from '../endpoints';
+import logger from '../../../config/logger';
+import { extractFilenameFromHeader } from '../../helpers/productsHelper';
 
 export const productoService = {
   getAll: async (params = {}) => {
@@ -50,6 +51,24 @@ export const productoService = {
       return response.data;
     } catch (error) {
       logger.error('Error al cambiar el estado del producto:', error);
+      throw error;
+    }
+  },
+
+  exportToCSV: async () => {
+    try {
+      const response = await axiosInstance.get(endpoints.productosExportarCSV, {
+        responseType: 'blob',
+      });
+
+      return {
+        blob: response.data,
+        filename:
+          extractFilenameFromHeader(response.headers['content-disposition']) ||
+          `productos_${new Date().toISOString().split('T')[0]}.csv`,
+      };
+    } catch (error) {
+      logger.error('Error al exportar productos a CSV:', error);
       throw error;
     }
   },

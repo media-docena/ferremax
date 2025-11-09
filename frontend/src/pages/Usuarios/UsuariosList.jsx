@@ -217,6 +217,13 @@ function UsuariosList() {
             </tbody>
           </table>
         </div>
+
+        {/* Mensaje cuando no hay usuarios */}
+        {(!users.data || users.data.length === 0) && (
+          <div className='text-center py-12 text-gray-500'>
+            No se encontraron registros de usuarios
+          </div>
+        )}
       </div>
 
       {/* Modal */}
