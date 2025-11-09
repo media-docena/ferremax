@@ -19,13 +19,16 @@ import Documentacion from './pages/Documentacion/Documentacion';
 import ErrorPage from './pages/Error/ErrorPage';
 import { layoutLoader } from './api/loaders/layoutLoaders';
 import { usuariosLoader } from './api/loaders/usuariosLoaders';
+import { productosLoader } from './api/loaders/productosLoaders';
+import { reportesLoader } from './api/loaders/reportesLoaders';
 import { loginAction, logoutAction } from './api/actions/authActions';
 import { changeUsuarioStatusAction } from './api/actions/usuariosActions';
+import { changeProductoStatusAction } from './api/actions/productosActions';
 
 const router = createBrowserRouter([
   // Rutas públicas
   {
-    path: '/login',
+    path: 'login',
     Component: Login,
     errorElement: <ErrorPage />,
     action: loginAction,
@@ -42,13 +45,14 @@ const router = createBrowserRouter([
       {
         path: 'productos',
         children: [
-          { index: true, Component: ProductosList },
+          { index: true, loader: productosLoader, Component: ProductosList },
           { path: 'crear', Component: ProductoCrear },
           {
             path: ':productoId',
             children: [
               { index: true, Component: ProductoDetalle },
               { path: 'editar', Component: ProductoEditar },
+              { path: 'estado', action: changeProductoStatusAction },
             ],
           },
         ],
@@ -57,14 +61,16 @@ const router = createBrowserRouter([
         path: 'usuarios',
         middleware: [roleMiddleware(['admin'])],
         children: [
-          { index: true, loader: usuariosLoader, Component: UsuariosList,},
-          { path: ':usuarioId', Component: UsuarioDetalle },
-          { path: ':usuarioId/editar', Component: UsuarioEditar },
-          {
-            path: ':usuarioId/estado',
-            action: changeUsuarioStatusAction,
-          },
+          { index: true, loader: usuariosLoader, Component: UsuariosList },
           { path: 'crear', Component: UsuarioCrear },
+          {
+            path: ':usuarioId',
+            children: [
+              { index: true, Component: UsuarioDetalle },
+              { path: 'editar', Component: UsuarioEditar },
+              { path: 'estado', action: changeUsuarioStatusAction },
+            ],
+          },
         ],
       },
       {
@@ -77,6 +83,7 @@ const router = createBrowserRouter([
       {
         path: 'reportes',
         middleware: [roleMiddleware(['admin', 'encargado'])],
+        loader: reportesLoader,
         Component: ReportesList,
       },
       {
@@ -85,7 +92,7 @@ const router = createBrowserRouter([
         Component: Documentacion,
       },
       {
-        path: '/logout',
+        path: 'logout',
         action: logoutAction,
       },
     ],

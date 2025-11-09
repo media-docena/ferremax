@@ -11,7 +11,7 @@ export const endpoints = {
   productos: '/productos',
   productosById: (id) => `/productos/${id}`,
   productoEstado: (id) => `/productos/${id}/estado`,
-  productoExportarCSV: '/productos/exportar/csv',
+  productosExportarCSV: '/productos/exportar/csv',
 
   // Ventas
   ventas: '/ventas',

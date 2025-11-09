@@ -1,8 +1,8 @@
 import axiosInstance from '../axiosConfig';
-import { endpoints } from './endpoints';
-import logger from '../config/logger'
+import { endpoints } from '../endpoints';
+import logger from '../../../config/logger';
 
-export const ventaService = {
+export const reporteService = {
     getAll: async (params = {}) => {
         try {
             const response = await axiosInstance.get(endpoints.ventas, { params });
@@ -13,9 +13,9 @@ export const ventaService = {
         }
     },
 
-    getVentasTopProductos: async (params = {}) => {
+    getVentasTopProductos: async () => {
         try {
-            const response = await axiosInstance.get(endpoints.ventasTopProductos, { params });
+            const response = await axiosInstance.get(endpoints.ventasTopProductos);
             return response.data;
         } catch (error) {
             logger.error('Error al obtener ventas:', error);

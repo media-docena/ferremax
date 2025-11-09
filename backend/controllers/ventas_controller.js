@@ -9,9 +9,9 @@ export default {
         try {
             const ventas = await VentaService.findAll(
               req.query.search || '',
-              req.query.startDate,
-              req.query.endDate,
-              req.query.paymentMethod
+              req.query.fechadesde,
+              req.query.fechahasta,
+              req.query.formapago
             );
 
             if (!ventas || ventas?.length === 0) throw ApiError.notFound('No se encontraron registros');
