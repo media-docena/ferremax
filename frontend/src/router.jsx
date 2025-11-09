@@ -18,8 +18,14 @@ import ReportesList from './pages/Reportes/ReportesList';
 import Documentacion from './pages/Documentacion/Documentacion';
 import ErrorPage from './pages/Error/ErrorPage';
 import { layoutLoader } from './api/loaders/layoutLoaders';
-import { usuariosLoader } from './api/loaders/usuariosLoaders';
-import { productosLoader } from './api/loaders/productosLoaders';
+import {
+  usuariosLoader,
+  usuarioByIdLoader,
+} from './api/loaders/usuariosLoaders';
+import {
+  productosLoader,
+  productoDetalleLoader,
+} from './api/loaders/productosLoaders';
 import { reportesLoader } from './api/loaders/reportesLoaders';
 import { loginAction, logoutAction } from './api/actions/authActions';
 import { changeUsuarioStatusAction } from './api/actions/usuariosActions';
@@ -50,7 +56,12 @@ const router = createBrowserRouter([
           {
             path: ':productoId',
             children: [
-              { index: true, Component: ProductoDetalle },
+              {
+                index: true,
+                loader: productoDetalleLoader,
+                action: changeProductoStatusAction,
+                Component: ProductoDetalle,
+              },
               { path: 'editar', Component: ProductoEditar },
               { path: 'estado', action: changeProductoStatusAction },
             ],
@@ -66,7 +77,12 @@ const router = createBrowserRouter([
           {
             path: ':usuarioId',
             children: [
-              { index: true, Component: UsuarioDetalle },
+              {
+                index: true,
+                action: changeUsuarioStatusAction,
+                loader: usuarioByIdLoader,
+                Component: UsuarioDetalle,
+              },
               { path: 'editar', Component: UsuarioEditar },
               { path: 'estado', action: changeUsuarioStatusAction },
             ],

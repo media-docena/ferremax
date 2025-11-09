@@ -44,6 +44,7 @@ function ActionButton ({
   target,
   disabled = false,
   className = '',
+  isLoading = false,
 }) {
   // Clases de color por variante
   const variants = {
@@ -54,8 +55,23 @@ function ActionButton ({
     neutral: 'bg-gray-300 hover:bg-gray-400 text-gray-800',
     addValid: 'bg-yellow-400 hover:bg-yellow-200 text-gray-800',
     addInvalid: 'bg-gray-300 hover:bg-gray-400 text-gray-500',
-    continuePayment: 'w-full justify-center bg-yellow-400 hover:bg-yellow-200 text-gray-800',
-    backPayment: 'w-full justify-center bg-gray-300 hover:bg-gray-400 text-gray-800',
+    continuePayment:
+      'w-full justify-center bg-yellow-400 hover:bg-yellow-200 text-gray-800',
+    backPayment:
+      'w-full justify-center bg-gray-300 hover:bg-gray-400 text-gray-800',
+  };
+
+  // Spinner colors según la variante
+  const spinnerColors = {
+    success: 'border-t-white',
+    warning: 'border-t-gray-800',
+    danger: 'border-t-white',
+    info: 'border-t-white',
+    neutral: 'border-t-gray-800',
+    addValid: 'border-t-gray-800',
+    addInvalid: 'border-t-gray-500',
+    continuePayment: 'border-t-gray-800',
+    backPayment: 'border-t-gray-800',
   };
 
   // Clases base compartidas
@@ -65,16 +81,29 @@ function ActionButton ({
     inline-flex items-center transition-colors duration-200
     focus:outline-none focus:ring-2 focus:ring-offset-1
     focus:ring-gray-300
-    ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+    ${disabled || isLoading ? 'opacity-50 cursor-not-allowed' : ''}
     ${className}
   `;
+
+  // Contenido del botón (con spinner si isLoading)
+  const content = (
+    <>
+      {isLoading ? (
+        <div
+          className={`animate-spin h-5 w-5 border-2 border-white/30 ${spinnerColors[variant]} rounded-full mr-2`}
+        />
+      ) : (
+        icon && <span className='mr-2'>{icon}</span>
+      )}
+      <span>{label}</span>
+    </>
+  );
 
   // Navegación interna (React Router)
   if (to) {
     return (
       <Link to={to} className={baseClasses}>
-        {icon && <span className="mr-2">{icon}</span>}
-        {label}
+        {content}
       </Link>
     );
   }
@@ -82,18 +111,26 @@ function ActionButton ({
   // Enlace externo
   if (href) {
     return (
-      <a href={href} target={target} rel="noopener noreferrer" className={baseClasses}>
-        {icon && <span className="mr-2">{icon}</span>}
-        {label}
+      <a
+        href={href}
+        target={target}
+        rel='noopener noreferrer'
+        className={baseClasses}
+      >
+        {content}
       </a>
     );
   }
 
   // Botón clásico (acción local)
   return (
-    <button type={type} onClick={onClick} className={baseClasses} disabled={disabled}>
-      {icon && <span className="mr-2">{icon}</span>}
-      {label}
+    <button
+      type={type}
+      onClick={onClick}
+      className={baseClasses}
+      disabled={disabled || isLoading}
+    >
+      {content}
     </button>
   );
 };

@@ -46,14 +46,22 @@ export function getProductHighlight(producto) {
  *
  * @param {string} fecha - Cadena en formato ISO o `yyyy-mm-dd` que representa una fecha.
  * @returns {string} - Fecha formateada en formato argentino `dd/mm/yyyy` o 'N/A' si no es válida.
+ * @param {boolean} [conHora=false] - Incluye hora y minuto si se pasa `true`.
  */
-export function formatFechaArgentina(fecha) {
+export function formatFechaArgentina(fecha, conHora = false) {
   if (!fecha) return 'N/A';
 
   // Tomamos solo la parte de la fecha
   const [year, month, day] = fecha.split('T')[0].split('-');
 
   if (!year || !month || !day) return 'N/A';
+
+  if (conHora) {
+    const [hour, minute] = fecha.split('T')[1].split(':');
+    if (!hour || !minute) return 'N/A';
+
+    return `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year} - ${hour}:${minute}`;
+  }
 
   return `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year}`;
 }

@@ -163,7 +163,7 @@ function UsuariosList() {
                     </td>
                     <td className='p-4'>{user.correo}</td>
 
-                    <td className='p-4'>{user.empleado.telefono}</td>
+                    <td className='p-4'>{user.empleado.telefono || '-'}</td>
                     <td className='p-4'>
                       <StatusBadge
                         status={capitalizeFirstLetter(user.estado)}

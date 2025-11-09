@@ -23,3 +23,23 @@ export const productosLoader = async ({ request }) => {
         throw error;
     }
 };
+
+export const productoDetalleLoader = async ({ params }) => {
+    try {
+        const productoResponse = await productoService.getById(params.productoId);
+        return {
+            producto: productoResponse.data || [],
+        };
+    } catch (error) {
+        if (error.response?.status === 404) {
+          return {
+            productos: [],
+            status: 404,
+            message:
+              error.response.data?.message || 'Producto no encontrado',
+          };
+        }
+        logger.error('Error al obtener un producto por ID:', error);
+        throw error;
+    }
+};
