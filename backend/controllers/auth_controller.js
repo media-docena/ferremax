@@ -36,7 +36,8 @@ export default {
       // Se crea el token de autenticación
       const token = jwt.sign(
         {
-          id: usuario.empleado.idEmpleado,
+          id: usuario.idUsuario,
+          idEmpleado: usuario.empleado.idEmpleado,
           nombre: `${usuario.empleado.nombre} ${usuario.empleado.apellido}`,
           rol: usuario.usuariosrol[0]?.rol?.descripcion,
         },
@@ -49,6 +50,7 @@ export default {
         token,
         user: {
           id: usuario.idUsuario,
+          idEmpleado: usuario.empleado.idEmpleado,
           nombre: `${usuario.empleado.nombre} ${usuario.empleado.apellido}`,
           rol: usuario.usuariosrol[0]?.rol?.descripcion,
         },

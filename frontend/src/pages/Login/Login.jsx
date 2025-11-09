@@ -1,48 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router';
+import React from 'react';
+import {
+  useNavigation,
+  Form,
+  useActionData,
+} from 'react-router';
 import Logo from '../../assets/icons/logo.svg'
 
 function Login() {
-  const [correo, setCorreo] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
-
-  // Usuario de prueba
-  const usuarioPrueba = {
-    nombre: 'Alberto',
-    apellido: 'Martinez',
-    rol: 'Administrador',
-    correo: 'albertom@gmail.com',
-    password: 'admin123',
-  };
-
-  // Si ya hay sesión activa, redirigir a home
-  useEffect(() => {
-    const usuario = localStorage.getItem('userSession');
-    if (usuario) {
-      navigate('/', { replace: true });
-    }
-  }, [navigate]);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (
-      correo === usuarioPrueba.correo &&
-      password === usuarioPrueba.password
-    ) {
-      setError('');
-      const { password: _password, ...userSession } = usuarioPrueba;
-      localStorage.setItem(
-        'userSession',
-        JSON.stringify(userSession)
-      );
-      navigate('/');
-    } else {
-      setError('Datos no válidos. Intentar nuevamente');
-    }
-  };
+  const actionData = useActionData();
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === 'submitting';
+  
 
   return (
     <div className='flex items-center justify-center min-h-screen bg-gray-100 px-4'>
@@ -56,11 +24,12 @@ function Login() {
         </div>
 
         {/* Formulario */}
-        <form
-          onSubmit={handleSubmit}
+        <Form
+          action='/login'
+          method='post'
           className='bg-white p-6 rounded-b-md shadow-md'
         >
-          <div className='mb-4'>
+          <div className='mb-4 form-group'>
             <label
               htmlFor='correo'
               className='block text-sm font-medium text-gray-700 mb-2'
@@ -70,8 +39,8 @@ function Login() {
             <input
               id='correo'
               type='email'
-              value={correo}
-              onChange={(e) => setCorreo(e.target.value)}
+              name='correo'
+              defaultValue={actionData?.correo || ''}
               placeholder='Ingrese su correo'
               required
               className='w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50
@@ -79,7 +48,7 @@ function Login() {
             />
           </div>
 
-          <div className='mb-4'>
+          <div className='mb-4 form-group'>
             <label
               htmlFor='password'
               className='block text-sm font-medium text-gray-700 mb-2'
@@ -89,8 +58,8 @@ function Login() {
             <input
               id='password'
               type='password'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              name='password'
+              defaultValue={actionData?.password || ''}
               placeholder='Ingrese su contraseña'
               required
               className='w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50
@@ -99,21 +68,22 @@ function Login() {
           </div>
 
           {/* Error */}
-          {error && (
+          {actionData?.error && (
             <p className='text-red-500 bg-red-200 py-2 rounded-md text-sm mb-3 text-center'>
-              {error}
+              {actionData.error}
             </p>
           )}
 
           {/* Botón */}
           <button
             type='submit'
+            disabled={isSubmitting}
             className='w-full bg-gray-800 text-white my-2 py-3 rounded-md font-medium
                        hover:bg-gray-900 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400'
           >
-            Iniciar sesión
+            {isSubmitting ? 'Iniciando sesión...' : 'Iniciar Sesión'}
           </button>
-        </form>
+        </Form>
       </div>
     </div>
   );

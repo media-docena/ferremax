@@ -1,8 +1,13 @@
 import React from 'react';
+import { useAuth } from '../../contexts/AuthContext';
 import Breadcrumbs from '../../components/common/Breadcrumbs';
-import Logo from '../../assets/icons/logo.svg?react'
+import Logo from '../../assets/icons/logo.svg?react';
 
 function Home() {
+  // Obtenemos al usuario del contexto y tomamos su nombre
+  const { user } = useAuth();
+  const username = user ? user.nombre.split(' ')[0] : 'Invitado';
+
   const breadcrumbItems = [{ label: 'Home', href: '#' }];
 
   return (
@@ -18,7 +23,7 @@ function Home() {
             FerreMax
           </span>
         </h1>
-        <h2 className='p-2 mb-4'>¡Bienvenido, Alberto!</h2>
+        <h2 className='p-2 mb-4'>¡Bienvenido/a, {username}!</h2>
       </div>
     </div>
   );

@@ -37,3 +37,6 @@ build/
 
 #Archivos de prisma
 generated/prisma
+
+/package.json
+/package-lock.json

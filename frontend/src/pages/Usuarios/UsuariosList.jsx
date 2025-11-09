@@ -1,160 +1,241 @@
-import React from 'react'
+import React from 'react';
+import { useState, useEffect } from 'react';
+import { useLoaderData, useFetcher } from 'react-router';
+import { useAuth } from '../../contexts/AuthContext';
+// Componentes
 import Breadcrumbs from '../../components/common/Breadcrumbs';
 import ActionButton from '../../components/common/Buttons/ActionButton';
 import ActionIconButton from '../../components/common/Buttons/ActionIconButton';
 import StatusBadge from '../../components/common/StatusBadge';
+import ConfirmModal from '../../components/common/ConfirmModal';
+import capitalizeFirstLetter from '../../helpers/utils';
+import AlertMessage from '../../components/common/AlertMessage';
+// Iconos
 import AddIcon from '../../assets/icons/add.svg?react';
 import VisibilityIcon from '../../assets/icons/visibility.svg?react';
 import EditIcon from '../../assets/icons/edit.svg?react';
 import DeleteIcon from '../../assets/icons/delete.svg?react';
-import ArrowUpwardIcon from '../../assets/icons/arrow_upward.svg?react'
+import ArrowUpwardIcon from '../../assets/icons/arrow_upward.svg?react';
 import UsuarioCrear from '/src/pages/Usuarios/UsuarioCrear.jsx';
 
 function UsuariosList() {
+  // Usuario logueado
+  const { user: loggedUser } = useAuth();
+
+  // Listado de usuarios
+  const users = useLoaderData();
+
+  const fetcher = useFetcher();
+
   const breadcrumbItems = [
     { label: 'Usuarios', href: '#' },
     { label: 'Listado de usuarios' },
   ];
 
-  const users = [
-    {
-      id: '001',
-      name: 'Alberto',
-      surname: 'Martinez',
-      role: 'Administrador',
-      email: 'albertom@gmail.com',
-      phone: '1123008800',
-      status: 'Activo',
-      createdDate: '2025-10-10T18:50:22.169185',
-      updatedDate: '2025-10-10T18:50:22.169185',
-    },
-    {
-      id: '002',
-      name: 'Gustavo',
-      surname: 'Correa',
-      role: 'Encargado',
-      email: 'gustavoc@gmail.com',
-      phone: '1176234589',
-      status: 'Inactivo',
-      createdDate: '2025-10-10T18:50:22.169185',
-      updatedDate: '2025-10-10T18:50:22.169185',
-    },
-    {
-      id: '003',
-      name: 'José',
-      surname: 'Herrera',
-      role: 'Vendedor',
-      email: 'joseh@gmail.com',
-      phone: '1176234589',
-      status: 'Activo',
-      createdDate: '2025-10-10T18:50:22.169185',
-      updatedDate: '2025-10-10T18:50:22.169185',
-    },
-    {
-      id: '004',
-      name: 'Manuel',
-      surname: 'Catriel',
-      role: 'Vendedor',
-      email: 'manuelc@gmail.com',
-      phone: '1198465782',
-      status: 'Activo',
-      createdDate: '2025-10-10T18:50:22.169185',
-      updatedDate: '2025-10-10T18:50:22.169185',
-    },
-    {
-      id: '005',
-      name: 'Marta',
-      surname: 'Hartmann',
-      role: 'Administrador',
-      email: 'marthah@gmail.com',
-      phone: '1130287045',
-      status: 'Activo',
-      createdDate: '2025-10-10T18:50:22.169185',
-      updatedDate: '2025-10-10T18:50:22.169185',
-    },
-    {
-      id: '006',
-      name: 'Analia',
-      surname: 'Nuñez',
-      role: 'Vendedor',
-      email: 'analian@gmail.com',
-      phone: '1198342074',
-      status: 'Activo',
-      createdDate: '2025-10-10T18:50:22.169185',
-      updatedDate: '2025-10-10T18:50:22.169185',
-    },
-  ];
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  // Muestra alertas cuando fetcher.data cambia
+  useEffect(() => {
+    if (fetcher.data?.success) {
+      setSuccessMessage(
+        fetcher.data.message || 'Estado actualizado exitosamente'
+      );
+      setErrorMessage(null);
+    }
+    if (fetcher.data?.error) {
+      setErrorMessage(fetcher.data.error);
+      setSuccessMessage(null);
+    }
+  }, [fetcher.data]);
+
+  // Handlers del modal de acción
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [targetStatus, setTargetStatus] = useState(null);
+
+  // Abre el modal de confirmación
+  const handleOpenModal = (user, newStatus) => {
+    setSelectedUser(user);
+    setTargetStatus(newStatus);
+    setIsModalOpen(true);
+  };
+
+  // Confirma el cambio de estado del usuario
+   const handleConfirm = () => {
+     if (selectedUser && targetStatus) {
+       fetcher.submit(
+         { estado: targetStatus },
+         {
+           method: 'post',
+           action: `${selectedUser.idUsuario}/estado`,
+         }
+       );
+     }
+     setIsModalOpen(false);
+     setSelectedUser(null);
+     setTargetStatus(null);
+   };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    setSelectedUser(null);
+    setTargetStatus(null);
+  };
 
   return (
     <div>
       <Breadcrumbs items={breadcrumbItems} />
       <div className='bg-white p-6 rounded-lg shadow-lg'>
-              <div className='flex justify-between items-center mb-6 flex-wrap gap-4'>
-                <h2 className='text-2xl font-bold text-gray-900'>
-                  Listado de Usuarios
-                </h2>
-                <div className='flex items-center gap-4'>
-                  <ActionButton
-                    label='Nuevo Usuario'
-                    icon={<AddIcon />}
-                    variant='warning'
-                    to='crear'
-                    onClick={UsuarioCrear}
-                  />
-                </div>
-              </div>
-      
-              {/* Users List Table */}
-              <div className='overflow-x-auto'>
-                <table className='w-full whitespace-nowrap'>
-                  <thead className='text-left text-sm font-semibold text-gray-500 border-b border-gray-200'>
-                    <tr>
-                      <th className='p-4'>Nombre</th>
-                      <th className='p-4'>Apellido</th>
-                      <th className='p-4'>Rol</th>
-                      <th className='p-4'>Correo</th>
-                      <th className='p-4'>Teléfono</th>
-                      <th className='p-4'>Estado</th>
-                      <th className='p-4 text-center'>Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody className='divide-y divide-gray-200 text-sm'>
-                    {users.map((user) => (
-                      <tr
-                        key={user.id}
-                        className='hover:bg-gray-100'
-                      >
-                        <td className='p-4'>{user.name}</td>
-                        <td className='p-4'>{user.surname}</td>
-                        <td className='p-4'>{user.role}</td>
-                        <td className='p-4'>{user.email}</td>
-                        
-                        <td className='p-4'>{user.phone}</td>
-                        <td className='p-4'>
-                          <StatusBadge status={user.status} />
-                        </td>
-                        {/* Action Buttons Column */}
-                        <td className='p-4 flex justify-center items-center space-x-2'>
-                          <ActionIconButton icon={<VisibilityIcon />} variant='info' to={user.id} />
-                          <ActionIconButton icon={<EditIcon />} variant='warning' to={`${user.id}/editar`} />
-                          {user.status === 'Inactivo' ? (
-                            <button className='text-gray-500 hover:text-green-500'>
-                              <ArrowUpwardIcon />
-                            </button>
+        <div className='flex justify-between items-center mb-6 flex-wrap gap-4'>
+          <h2 className='text-2xl font-bold text-gray-900'>
+            Listado de Usuarios
+          </h2>
+          <div className='flex items-center gap-4'>
+            <ActionButton
+              label='Nuevo Usuario'
+              icon={<AddIcon />}
+              variant='warning'
+              to='crear'
+              onClick={UsuarioCrear}
+            />
+          </div>
+        </div>
+
+        {/* Alerta de éxito */}
+        {successMessage && (
+          <AlertMessage
+            type='success'
+            message={successMessage}
+            duration={3000}
+            onClose={() => setSuccessMessage(null)}
+          />
+        )}
+
+        {/* Alerta de error */}
+        {errorMessage && (
+          <AlertMessage
+            type='error'
+            message={errorMessage}
+            duration={5000}
+            onClose={() => setErrorMessage(null)}
+          />
+        )}
+
+        {/* Users List Table */}
+        <div className='overflow-x-auto'>
+          <table className='w-full whitespace-nowrap'>
+            <thead className='text-left text-sm font-semibold text-gray-500 border-b border-gray-200'>
+              <tr>
+                <th className='p-4'>Nombre</th>
+                <th className='p-4'>Apellido</th>
+                <th className='p-4'>Rol</th>
+                <th className='p-4'>Correo</th>
+                <th className='p-4'>Teléfono</th>
+                <th className='p-4'>Estado</th>
+                <th className='p-4 text-center'>Acciones</th>
+              </tr>
+            </thead>
+            <tbody className='divide-y divide-gray-200 text-sm'>
+              {users.data.map((user) => {
+                if (loggedUser.idEmpleado === user.empleado.idEmpleado) {
+                  return null;
+                }
+
+                // Verificamos si el usuario está siendo actualizado
+                const isUpdating =
+                  fetcher.state === 'submitting' &&
+                  fetcher.formAction?.includes(user.idUsuario);
+
+                return (
+                  <tr
+                    key={user.idUsuario}
+                    className={`hover:bg-gray-100 ${
+                      isUpdating ? 'opacity-50' : ''
+                    }`}
+                  >
+                    <td className='p-4'>{user.empleado.nombre}</td>
+                    <td className='p-4'>{user.empleado.apellido}</td>
+                    <td className='p-4'>
+                      {capitalizeFirstLetter(
+                        user.usuariosrol[0].rol.descripcion
+                      )}
+                    </td>
+                    <td className='p-4'>{user.correo}</td>
+
+                    <td className='p-4'>{user.empleado.telefono}</td>
+                    <td className='p-4'>
+                      <StatusBadge
+                        status={capitalizeFirstLetter(user.estado)}
+                      />
+                    </td>
+                    {/* Action Buttons Column */}
+                    <td className='p-4 flex justify-center items-center space-x-2'>
+                      <ActionIconButton
+                        icon={<VisibilityIcon />}
+                        variant='info'
+                        to={user.idUsuario.toString()}
+                      />
+                      <ActionIconButton
+                        icon={<EditIcon />}
+                        variant='warning'
+                        to={`${user.idUsuario}/editar`}
+                      />
+
+                      {/* Botón de cambio de estado */}
+                      {user.estado === 'inactivo' ? (
+                        <button
+                          type='button'
+                          onClick={() => handleOpenModal(user, 'activo')}
+                          disabled={isUpdating}
+                          className='text-gray-500 hover:text-green-500 disabled:opacity-50 disabled:cursor-not-allowed'
+                        >
+                          {isUpdating ? (
+                            <div className='animate-spin h-5 w-5 border-2 border-gray-300 border-t-green-500 rounded-full' />
                           ) : (
-                            <button className='text-gray-500 hover:text-red-500'>
-                              <DeleteIcon />
-                            </button>
+                            <ArrowUpwardIcon />
                           )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+                        </button>
+                      ) : (
+                        <button
+                          type='button'
+                          onClick={() => handleOpenModal(user, 'inactivo')}
+                          disabled={isUpdating}
+                          className='text-gray-500 hover:text-red-500 disabled:opacity-50 disabled:cursor-not-allowed'
+                        >
+                          {isUpdating ? (
+                            <div className='animate-spin h-5 w-5 border-2 border-gray-300 border-t-red-500 rounded-full' />
+                          ) : (
+                            <DeleteIcon />
+                          )}
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mensaje cuando no hay usuarios */}
+        {(!users.data || users.data.length === 0) && (
+          <div className='text-center py-12 text-gray-500'>
+            No se encontraron registros de usuarios
+          </div>
+        )}
+      </div>
+
+      {/* Modal */}
+      <ConfirmModal
+        isOpen={isModalOpen}
+        color={targetStatus === 'inactivo' ? 'red' : 'green'}
+        entityName={'usuario'}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+      />
     </div>
   );
 }
 
-export default UsuariosList
+export default UsuariosList;

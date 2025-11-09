@@ -81,7 +81,7 @@ function Header({ userName, userRole, onLogout }) {
                     <p className='font-roboto font-semibold text-gray-800'>
                       {userName}
                     </p>
-                    <p className='font-roboto text-sm text-gray-700'>
+                    <p className='font-roboto text-sm text-gray-700 capitalize'>
                       {userRole}
                     </p>
                   </div>

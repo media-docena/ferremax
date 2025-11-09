@@ -33,19 +33,34 @@ export default {
                   },
                 ]
               : []),
-            { empleado: { nombre: { contains: searchTerm } } },
+            {
+              empleado: {
+                nombre: { contains: searchTerm, },
+              },
+            },
+            {
+              empleado: {
+                apellido: { contains: searchTerm, },
+              },
+            },
           ],
         }),
         // Luego filtra por rango de fechas si se proporcionan
         ...(fechaDesde &&
           fechaHasta && {
-            fechaVenta: {
+            fecha: {
               gte: new Date(fechaDesde),
               lte: new Date(fechaHasta),
             },
           }),
         // Finalmente filtra por método de pago si se proporciona
-        ...(formaPago && { formapago: formaPago }),
+        ...(formaPago && {
+          formapago: {
+            descripcion: {
+              contains: formaPago,
+            },
+          },
+        }),
       };
 
       const [ventas, total] = await Promise.all([
@@ -57,7 +72,7 @@ export default {
             empleado: true,
           },
         }),
-        prisma.venta.count({ where: whereClause }),
+        prisma.venta.count(),
       ]);
 
       return { total, ventas };

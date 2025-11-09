@@ -42,6 +42,8 @@ function ActionButton ({
   to,
   href,
   target,
+  disabled = false,
+  className = '',
 }) {
   // Clases de color por variante
   const variants = {
@@ -63,6 +65,8 @@ function ActionButton ({
     inline-flex items-center transition-colors duration-200
     focus:outline-none focus:ring-2 focus:ring-offset-1
     focus:ring-gray-300
+    ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+    ${className}
   `;
 
   // Navegación interna (React Router)
@@ -87,7 +91,7 @@ function ActionButton ({
 
   // Botón clásico (acción local)
   return (
-    <button type={type} onClick={onClick} className={baseClasses}>
+    <button type={type} onClick={onClick} className={baseClasses} disabled={disabled}>
       {icon && <span className="mr-2">{icon}</span>}
       {label}
     </button>

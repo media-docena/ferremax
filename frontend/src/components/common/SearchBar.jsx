@@ -1,9 +1,15 @@
 // components/common/SearchBar.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SearchIcon from '../../assets/icons/search.svg?react';
 
-function SearchBar ({ placeholder = 'Buscar...', onSearch }) {
+function SearchBar ({ placeholder = 'Buscar...', value= '', onSearch }) {
   const [searchTerm, setSearchTerm] = useState('');
+
+  // Actualizar el searchTerm cuando cambia el valor
+  useEffect(() => {
+    setSearchTerm(value);
+  }, [value]);
+
 
   const handleChange = (e) => {
     setSearchTerm(e.target.value);

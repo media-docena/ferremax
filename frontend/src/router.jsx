@@ -1,8 +1,8 @@
 import React from 'react';
 import { createBrowserRouter } from 'react-router';
-import authMiddleware from './Middlewares/authMiddleware';
-import Login from './pages/Login/Login';
+import { authMiddleware, roleMiddleware } from './Middlewares/authMiddleware';
 import Layout from './Layout';
+import Login from './pages/Login/Login';
 import Home from './pages/Home/Home';
 import UsuariosList from './pages/Usuarios/UsuariosList';
 import UsuarioCrear from './pages/Usuarios/UsuarioCrear';
@@ -17,17 +17,27 @@ import VentasFactura from './pages/Ventas/VentasFactura';
 import ReportesList from './pages/Reportes/ReportesList';
 import Documentacion from './pages/Documentacion/Documentacion';
 import ErrorPage from './pages/Error/ErrorPage';
-
+import { layoutLoader } from './api/loaders/layoutLoaders';
+import { usuariosLoader } from './api/loaders/usuariosLoaders';
+import { productosLoader } from './api/loaders/productosLoaders';
+import { reportesLoader } from './api/loaders/reportesLoaders';
+import { loginAction, logoutAction } from './api/actions/authActions';
+import { changeUsuarioStatusAction } from './api/actions/usuariosActions';
+import { changeProductoStatusAction } from './api/actions/productosActions';
 
 const router = createBrowserRouter([
+  // Rutas públicas
   {
-    path: '/login',
+    path: 'login',
     Component: Login,
     errorElement: <ErrorPage />,
+    action: loginAction,
   },
+  // Rutas privadas
   {
     path: '/',
     middleware: [authMiddleware],
+    loader: layoutLoader,
     Component: Layout,
     errorElement: <ErrorPage />,
     children: [
@@ -35,34 +45,56 @@ const router = createBrowserRouter([
       {
         path: 'productos',
         children: [
-          { index: true, Component: ProductosList },
+          { index: true, loader: productosLoader, Component: ProductosList },
           { path: 'crear', Component: ProductoCrear },
           {
             path: ':productoId',
             children: [
               { index: true, Component: ProductoDetalle },
               { path: 'editar', Component: ProductoEditar },
+              { path: 'estado', action: changeProductoStatusAction },
             ],
           },
         ],
       },
       {
         path: 'usuarios',
+        middleware: [roleMiddleware(['admin'])],
         children: [
-          { index: true, Component: UsuariosList },
-          { path: ':usuarioId', Component: UsuarioDetalle },
-          { path: ':usuarioId/editar', Component: UsuarioEditar },
+          { index: true, loader: usuariosLoader, Component: UsuariosList },
           { path: 'crear', Component: UsuarioCrear },
+          {
+            path: ':usuarioId',
+            children: [
+              { index: true, Component: UsuarioDetalle },
+              { path: 'editar', Component: UsuarioEditar },
+              { path: 'estado', action: changeUsuarioStatusAction },
+            ],
+          },
         ],
       },
-      { path: 'ventas',
+      {
+        path: 'ventas',
         children: [
           { index: true, Component: VentasList },
           { path: 'factura', Component: VentasFactura },
         ],
       },
-      { path: 'reportes', Component: ReportesList },
-      { path: 'documentacion', Component: Documentacion },
+      {
+        path: 'reportes',
+        middleware: [roleMiddleware(['admin', 'encargado'])],
+        loader: reportesLoader,
+        Component: ReportesList,
+      },
+      {
+        path: 'documentacion',
+        middleware: [roleMiddleware(['admin'])],
+        Component: Documentacion,
+      },
+      {
+        path: 'logout',
+        action: logoutAction,
+      },
     ],
   },
 ]);
