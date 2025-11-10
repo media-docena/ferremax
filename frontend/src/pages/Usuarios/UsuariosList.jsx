@@ -8,7 +8,7 @@ import ActionButton from '../../components/common/Buttons/ActionButton';
 import ActionIconButton from '../../components/common/Buttons/ActionIconButton';
 import StatusBadge from '../../components/common/StatusBadge';
 import ConfirmModal from '../../components/common/ConfirmModal';
-import capitalizeFirstLetter from '../../helpers/utils';
+import { capitalizeFirstLetter } from '../../helpers/utils';
 import AlertMessage from '../../components/common/AlertMessage';
 // Iconos
 import AddIcon from '../../assets/icons/add.svg?react';

@@ -14,8 +14,6 @@ function ProductoCrear() {
       <Breadcrumbs items={breadcrumbItems} />
       <ProductForm
         mode='create'
-        onSubmit={(data) => console.log('Producto creado:', data)}
-        link={'/productos'}
       />
     </div>
   );

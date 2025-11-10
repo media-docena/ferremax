@@ -140,7 +140,7 @@ export default {
 
         // Eliminar anteriores y crea la nueva
         ...(idUnidad !== undefined && {
-          ProductosUnidad: {
+          productosunidad: {
             deleteMany: {},
             ...(idUnidad !== null && {
               create: {

@@ -12,7 +12,7 @@ import AlertMessage from '../../components/common/AlertMessage';
 import ConfirmModal from '../../components/common/ConfirmModal';
 
 // Helpers
-import capitalizeFirstLetter from '../../helpers/utils';
+import { capitalizeFirstLetter } from '../../helpers/utils';
 import {
   getProductHighlight,
   formatFechaArgentina,
