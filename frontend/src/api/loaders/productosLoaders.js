@@ -24,7 +24,7 @@ export const productosLoader = async ({ request }) => {
     }
 };
 
-export const productoDetalleLoader = async ({ params }) => {
+export const productoByIdLoader = async ({ params }) => {
     try {
         const productoResponse = await productoService.getById(params.productoId);
         return {

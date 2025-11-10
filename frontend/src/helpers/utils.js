@@ -3,11 +3,21 @@
  * @param {string} word - String a capitalizar
  * @returns {string} - String capitalizado
  */
-function capitalizeFirstLetter(word) {
+export function capitalizeFirstLetter(word) {
   if (typeof word !== 'string' || word.length === 0) {
     return '';
   }
   return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
-export default capitalizeFirstLetter;
+export function formatErrors(errors = []) {
+   const backendErrors = {};
+   errors.forEach((err) => {
+     const field = err.field;
+     if (!backendErrors[field]) {
+       backendErrors[field] = [];
+     }
+     backendErrors[field].push(err.message);
+   });
+   return backendErrors;
+}

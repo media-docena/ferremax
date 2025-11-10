@@ -24,12 +24,16 @@ import {
 } from './api/loaders/usuariosLoaders';
 import {
   productosLoader,
-  productoDetalleLoader,
+  productoByIdLoader,
 } from './api/loaders/productosLoaders';
 import { reportesLoader } from './api/loaders/reportesLoaders';
 import { loginAction, logoutAction } from './api/actions/authActions';
 import { changeUsuarioStatusAction } from './api/actions/usuariosActions';
-import { changeProductoStatusAction } from './api/actions/productosActions';
+import {
+  changeProductoStatusAction,
+  updateProductoAction,
+  createProductoAction,
+} from './api/actions/productosActions';
 
 const router = createBrowserRouter([
   // Rutas públicas
@@ -52,17 +56,22 @@ const router = createBrowserRouter([
         path: 'productos',
         children: [
           { index: true, loader: productosLoader, Component: ProductosList },
-          { path: 'crear', Component: ProductoCrear },
+          { path: 'crear', action: createProductoAction, Component: ProductoCrear },
           {
             path: ':productoId',
             children: [
               {
                 index: true,
-                loader: productoDetalleLoader,
+                loader: productoByIdLoader,
                 action: changeProductoStatusAction,
                 Component: ProductoDetalle,
               },
-              { path: 'editar', Component: ProductoEditar },
+              {
+                path: 'editar',
+                loader: productoByIdLoader,
+                action: updateProductoAction,
+                Component: ProductoEditar,
+              },
               { path: 'estado', action: changeProductoStatusAction },
             ],
           },
