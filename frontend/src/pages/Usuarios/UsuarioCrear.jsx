@@ -14,8 +14,6 @@ function UsuarioCrear() {
       <Breadcrumbs items={breadcrumbItems} />
       <UserForm
         mode='create'
-        onSubmit={(data) => console.log('Usuario creado:', data)}
-        link={'/usuarios'}
       />
     </div>
   );

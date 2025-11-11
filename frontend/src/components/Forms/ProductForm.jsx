@@ -32,8 +32,6 @@ function ProductForm({ initialData = {}, mode = 'create' }) {
 
   // Configuraciones de React Query
   const { data: formOptions, isLoading, error } = useFormData();
-  console.log(errors);
-  console.log(generalError);
 
   if (isLoading) {
     return (

@@ -114,7 +114,7 @@ function UsuarioDetalle() {
             <DetailFieldTitle label='Nombre' value={usuario.empleado.nombre} />
             <DetailFieldTitle label='Apellido' value={usuario.empleado.apellido} />
             <DetailFieldTitle label='DNI' value={usuario.empleado.dni} />
-            <DetailFieldTitle label='Rol' value={usuario.usuariosrol[0].rol.descripcion} />
+            <DetailFieldTitle label='Rol' value={capitalizeFirstLetter(usuario.usuariosrol[0].rol.descripcion)} />
             <DetailFieldTitle label='Correo' value={usuario.correo} />
             <DetailFieldTitle
               label='Teléfono'
