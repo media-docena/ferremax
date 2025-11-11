@@ -5,17 +5,17 @@
  * @returns {string|null} - Tipo de highlight: 'out-of-stock' | 'low-stock' | 'expiring' | null
  */
 export function getProductHighlight(producto) {
-  // 1. Stock agotado 
+  // Stock agotado 
   if (producto.stock === 0) {
     return 'out-of-stock';
   }
 
-  // 2. Stock bajo
+  // Stock bajo
   if (producto.stockMin > 1 && producto.stock < producto.stockMin) {
     return 'low-stock';
   }
 
-  // 3. Próximo a vencer (si tiene fecha de vencimiento)
+  // Próximo a vencer (si tiene fecha de vencimiento)
   if (producto.fechaVencimiento) {
     const fechaVencimiento = new Date(producto.fechaVencimiento);
     const fechaActual = new Date();
@@ -46,14 +46,22 @@ export function getProductHighlight(producto) {
  *
  * @param {string} fecha - Cadena en formato ISO o `yyyy-mm-dd` que representa una fecha.
  * @returns {string} - Fecha formateada en formato argentino `dd/mm/yyyy` o 'N/A' si no es válida.
+ * @param {boolean} [conHora=false] - Incluye hora y minuto si se pasa `true`.
  */
-export function formatFechaArgentina(fecha) {
+export function formatFechaArgentina(fecha, conHora = false) {
   if (!fecha) return 'N/A';
 
   // Tomamos solo la parte de la fecha
   const [year, month, day] = fecha.split('T')[0].split('-');
 
   if (!year || !month || !day) return 'N/A';
+
+  if (conHora) {
+    const [hour, minute] = fecha.split('T')[1].split(':');
+    if (!hour || !minute) return 'N/A';
+
+    return `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year} - ${hour}:${minute}`;
+  }
 
   return `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year}`;
 }
@@ -133,4 +141,41 @@ export function downloadFile(blob, filename) {
   
   // Libera la memoria
   window.URL.revokeObjectURL(url);
+}
+
+
+// Helper para validar fechas futuras
+export const fechaFutura30Dias = (fecha) => {
+  if (!fecha) return true; // Opcional
+  const fechaMinima = new Date();
+  fechaMinima.setDate(fechaMinima.getDate() + 30);
+  const fechaIngresada = new Date(fecha);
+  return fechaIngresada >= fechaMinima;
+};
+
+export const filtrarProductoData = (data) =>{
+  const productoData = {};
+
+  const numericFields = ['stock', 'stockMin', 'idCategoria', 'idMarca', 'idUnidad', 'idProveedor'];
+  const floatFields = ['precio'];
+
+  for (const [key, value] of Object.entries(data)) {
+    if (value === undefined || value === '') continue; 
+
+    if (floatFields.includes(key)) {
+      productoData[key] = parseFloat(value);
+    } else if (numericFields.includes(key)) {
+      productoData[key] = parseInt(value);
+    } else if (key === 'descripcion' || key === 'fechaVencimiento') {
+      productoData[key] = value || null;
+    } else {
+      productoData[key] = value;
+    }
+  }
+
+  // Asignamos valores por defecto si no están definidos
+  if (productoData.stock === undefined) productoData.stock = 0;
+  if (productoData.stockMin === undefined) productoData.stockMin = 5;
+
+  return productoData;
 }

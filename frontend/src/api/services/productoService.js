@@ -26,7 +26,10 @@ export const productoService = {
 
   create: async (productoData) => {
     try {
-      const response = await axiosInstance.post(endpoints.productos, productoData);
+      const response = await axiosInstance.post(
+        endpoints.productos,
+        productoData
+      );
       return response.data;
     } catch (error) {
       logger.error('Error al crear un producto:', error);
@@ -36,7 +39,10 @@ export const productoService = {
 
   update: async (id, productoData) => {
     try {
-      const response = await axiosInstance.put(endpoints.productosById(id), productoData);
+      const response = await axiosInstance.put(
+        endpoints.productosById(id),
+        productoData
+      );
       return response.data;
     } catch (error) {
       logger.error('Error al actualizar el producto:', error);
@@ -47,7 +53,10 @@ export const productoService = {
   // Permite dar de baja un producto o activarlo nuevamente
   changeStatus: async (id, estado) => {
     try {
-      const response = await axiosInstance.patch(endpoints.productoEstado(id), estado);
+      const response = await axiosInstance.patch(
+        endpoints.productoEstado(id),
+        estado
+      );
       return response.data;
     } catch (error) {
       logger.error('Error al cambiar el estado del producto:', error);
@@ -69,6 +78,27 @@ export const productoService = {
       };
     } catch (error) {
       logger.error('Error al exportar productos a CSV:', error);
+      throw error;
+    }
+  },
+
+  getFormData: async () => {
+    try {
+      const [marcas, proveedores, categorias, unidades] = await Promise.all([
+        axiosInstance.get(endpoints.marcas),
+        axiosInstance.get(endpoints.proveedores),
+        axiosInstance.get(endpoints.categorias),
+        axiosInstance.get(endpoints.unidades),
+      ]);
+
+      return {
+        marcas: marcas.data.data,
+        proveedores: proveedores.data.data,
+        categorias: categorias.data.data,
+        unidades: unidades.data.data,
+      };
+    } catch (error) {
+      logger.error('Error fetching form data:', error);
       throw error;
     }
   },

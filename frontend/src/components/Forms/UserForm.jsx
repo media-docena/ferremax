@@ -1,40 +1,42 @@
 // components/forms/UserForm.jsx
 import React, { useState } from 'react';
-import { Link } from 'react-router';
+import { Link, Form, useActionData, useNavigation } from 'react-router';
+import { useRolData } from '../../hooks/useRolData';
+import { capitalizeFirstLetter } from '../../helpers/utils';
+import AlertMessage from '../common/AlertMessage';
 import ActionButton from '../common/Buttons/ActionButton';
 import SaveIcon from '../../assets/icons/save.svg?react';
 import ArrowBackIcon from '../../assets/icons/arrow_back.svg?react';
 
-function UserForm({
-  initialData = {},
-  mode = 'create',
-  onSubmit,
-  link,
-}) {
-  const [formData, setFormData] = useState({
-    nombre: '',
-    apellido: '',
-    rol: '',
-    correo: '',
-    telefono: '',
-    estado: 'activo', // Valor por defecto
-    dni: '',
-    direccion: '',
-    ...initialData, // Sobrescribe si se pasan valores iniciales (modo edición)
-  });
+function UserForm({ initialData = {}, mode = 'create' }) {
+  const actionData = useActionData();
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === 'submitting';
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  const formData = actionData?.formData || initialData;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(formData);
-  };
+  const errors = actionData?.errors || {};
+  const generalError = actionData?.error;
+
+  // Estados para manejar el cambio de estilos en los selects
+  const [selectedRol, setSelectedRol] = useState(formData.idRol || '');
+
+  // Configuraciones de React Query
+  const { data: formOptions, isLoading, error } = useRolData();
+
+
+  if (isLoading) {
+    return (
+      <div className='flex items-center text-gray-600'>
+        <div className='w-5 h-5 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin mr-2'></div>
+        <span>Cargando formulario...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div>Error cargando formulario: {error.message}</div>;
+  }
 
   return (
     <div className='bg-white p-6 rounded-lg shadow-md'>
@@ -53,8 +55,13 @@ function UserForm({
         </Link>
       </div>
 
+      {/* Alerta de error general */}
+      {generalError && (
+        <AlertMessage type='error' message={generalError} duration={5000} />
+      )}
+
       {/* FORMULARIO DE USUARIO */}
-      <form onSubmit={handleSubmit}>
+      <Form method='post'>
         {/* Row 1: Nombre y Apellido */}
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mb-6'>
           <div>
@@ -69,12 +76,17 @@ function UserForm({
               type='text'
               name='nombre'
               placeholder='Ej. Juan'
-              value={formData.nombre}
-              onChange={handleChange}
-              className='w-full px-4 py-2 font-roboto border border-gray-200 rounded-md bg-gray-50
-                         placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent'
+              defaultValue={formData.nombre || ''}
+              className={`w-full px-4 py-2 font-roboto border rounded-md bg-gray-50
+                         placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400
+                         ${
+                           errors.nombre ? 'border-red-500' : 'border-gray-200'
+                         }`}
               required
             />
+            {errors.nombre && (
+              <p className='mt-1 text-sm text-red-600'>{errors.nombre[0]}</p>
+            )}
           </div>
           <div>
             <label
@@ -88,12 +100,19 @@ function UserForm({
               type='text'
               name='apellido'
               placeholder='Ej. Pérez'
-              value={formData.apellido}
-              onChange={handleChange}
-              className='w-full px-4 py-2 font-roboto border border-gray-200 rounded-md bg-gray-50
-                         placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent'
+              defaultValue={formData.apellido || ''}
+              className={`w-full px-4 py-2 font-roboto border rounded-md bg-gray-50
+                         placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400
+                         ${
+                           errors.apellido
+                             ? 'border-red-500'
+                             : 'border-gray-200'
+                         }`}
               required
             />
+            {errors.apellido && (
+              <p className='mt-1 text-sm text-red-600'>{errors.apellido[0]}</p>
+            )}
           </div>
         </div>
 
@@ -111,12 +130,17 @@ function UserForm({
               type='email'
               name='correo'
               placeholder='ejemplo@dominio.com'
-              value={formData.correo}
-              onChange={handleChange}
-              className='w-full px-4 py-2 font-roboto border border-gray-200 rounded-md bg-gray-50
-                         placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent'
+              defaultValue={formData.correo || ''}
+              className={`w-full px-4 py-2 font-roboto border rounded-md bg-gray-50
+                         placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400
+                         ${
+                           errors.correo ? 'border-red-500' : 'border-gray-200'
+                         }`}
               required
             />
+            {errors.correo && (
+              <p className='mt-1 text-sm text-red-600'>{errors.correo[0]}</p>
+            )}
           </div>
           <div>
             <label
@@ -130,15 +154,84 @@ function UserForm({
               type='tel'
               name='telefono'
               placeholder='Ej. +54 9 11 1234 5678'
-              value={formData.telefono}
-              onChange={handleChange}
-              className='w-full px-4 py-2 font-roboto border border-gray-200 rounded-md bg-gray-50
-                         placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent'
+              defaultValue={formData.telefono || ''}
+              className={`w-full px-4 py-2 font-roboto border rounded-md bg-gray-50
+                         placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400
+                         ${
+                           errors.telefono
+                             ? 'border-red-500'
+                             : 'border-gray-200'
+                         }`}
             />
+            {errors.telefono && (
+              <p className='mt-1 text-sm text-red-600'>{errors.telefono[0]}</p>
+            )}
           </div>
         </div>
 
-        {/* Row 3: DNI, Rol, y Estado */}
+        {/* Row 3: Contraseña  */}
+        {mode === 'create' ? (
+          <div className='grid grid-cols-1 gap-6 mb-6'>
+            <div>
+              <label
+                htmlFor='password'
+                className='block text-sm font-medium text-gray-500 mb-2'
+              >
+                Contraseña <span className='text-red-500'>*</span>
+              </label>
+              <input
+                id='password'
+                type='password'
+                name='password'
+                placeholder='Mínimo 8 caracteres'
+                className={`w-full px-4 py-2 font-roboto border rounded-md bg-gray-50
+                           placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400
+                           ${
+                             errors.password
+                               ? 'border-red-500'
+                               : 'border-gray-200'
+                           }`}
+                required
+              />
+              {errors.password && (
+                <p className='mt-1 text-sm text-red-600'>
+                  {errors.password[0]}
+                </p>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className='grid grid-cols-1 gap-6 mb-6'>
+            <div>
+              <label
+                htmlFor='password'
+                className='block text-sm font-medium text-gray-500 mb-2'
+              >
+                Nueva Contraseña (dejar vacío para mantener la actual)
+              </label>
+              <input
+                id='password'
+                type='password'
+                name='password'
+                placeholder='Mínimo 8 caracteres'
+                className={`w-full px-4 py-2 font-roboto border rounded-md bg-gray-50
+                           placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400
+                           ${
+                             errors.password
+                               ? 'border-red-500'
+                               : 'border-gray-200'
+                           }`}
+              />
+              {errors.password && (
+                <p className='mt-1 text-sm text-red-600'>
+                  {errors.password[0]}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Row 4: DNI, Rol, y Estado */}
         <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-6'>
           <div>
             <label
@@ -152,34 +245,48 @@ function UserForm({
               type='text'
               name='dni'
               placeholder='Ej. 12345678'
-              value={formData.dni}
-              onChange={handleChange}
-              className='w-full px-4 py-2 font-roboto border border-gray-200 rounded-md bg-gray-50
-                         placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent'
+              defaultValue={formData.dni || ''}
+              className={`w-full px-4 py-2 font-roboto border rounded-md bg-gray-50
+                         placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400
+                         ${errors.dni ? 'border-red-500' : 'border-gray-200'}`}
               required
             />
+            {errors.dni && (
+              <p className='mt-1 text-sm text-red-600'>{errors.dni[0]}</p>
+            )}
           </div>
           <div>
             <label
-              htmlFor='rol'
+              htmlFor='idRol'
               className='block text-sm font-medium text-gray-500 mb-2'
             >
               Rol <span className='text-red-500'>*</span>
             </label>
             <select
-              id='rol'
-              name='rol'
-              value={formData.rol}
-              onChange={handleChange}
-              className='w-full px-4 py-2 font-roboto border border-gray-200 rounded-md bg-gray-50
-                         focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent'
+              id='idRol'
+              name='idRol'
+              defaultValue={formData.idRol || ''}
+              onChange={(e) => setSelectedRol(e.target.value)}
+              className={`w-full px-4 py-2 font-roboto border rounded-md bg-gray-50
+                         focus:outline-none focus:ring-2 focus:ring-amber-400
+                         ${selectedRol ? 'text-gray-800' : 'text-gray-400'}
+                         ${
+                           errors.idRol ? 'border-red-500' : 'border-gray-200'
+                         }`}
               required
             >
-              <option value='' hidden>Seleccione un rol</option>
-              <option value='administrador'>Administrador</option>
-              <option value='encargado'>Encargado</option>
-              <option value='vendedor'>Vendedor</option>
+              <option value='' disabled hidden>
+                Seleccione un rol
+              </option>
+              {formOptions?.roles?.data.map((rol) => (
+                <option key={rol.idRol} value={rol.idRol}>
+                  {capitalizeFirstLetter(rol.descripcion)}
+                </option>
+              ))}
             </select>
+            {errors.idRol && (
+              <p className='mt-1 text-sm text-red-600'>{errors.idRol[0]}</p>
+            )}
           </div>
           <div>
             <label
@@ -191,15 +298,21 @@ function UserForm({
             <select
               id='estado'
               name='estado'
-              value={formData.estado}
-              onChange={handleChange}
-              className='w-full px-4 py-2 font-roboto border border-gray-200 rounded-md bg-gray-50
-                         focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent'
+              defaultValue={formData.estado || ''}
+              className={`w-full px-4 py-2 font-roboto border rounded-md bg-gray-50
+                         focus:outline-none focus:ring-2 focus:ring-amber-400
+                         text-gray-800
+                         ${
+                           errors.estado ? 'border-red-500' : 'border-gray-200'
+                         }`}
               required
             >
               <option value='activo'>Activo</option>
               <option value='inactivo'>Inactivo</option>
             </select>
+            {errors.estado && (
+              <p className='mt-1 text-sm text-red-600'>{errors.estado[0]}</p>
+            )}
           </div>
         </div>
 
@@ -215,27 +328,40 @@ function UserForm({
             <input
               id='direccion'
               name='direccion'
-              placeholder='Calle, número, ciudad, código postal'
-              value={formData.direccion}
-              onChange={handleChange}
+              placeholder='Calle, número, piso, departamento'
+              defaultValue={formData.direccion || ''}
               rows='2'
-              className='w-full px-4 py-2 font-roboto border border-gray-200 rounded-md bg-gray-50
-                         placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent'
+              className={`w-full px-4 py-2 font-roboto border rounded-md bg-gray-50
+                         placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400
+                         ${
+                           errors.direccion
+                             ? 'border-red-500'
+                             : 'border-gray-200'
+                         }`}
             />
+            {errors.direccion && (
+              <p className='mt-1 text-sm text-red-600'>{errors.direccion[0]}</p>
+            )}
           </div>
         </div>
 
         {/* Action Buttons */}
         <div className='mt-8 pt-6 border-t border-gray-200 flex justify-end space-x-3'>
-          <ActionButton label='Cancelar' type='button' to={link} />
           <ActionButton
-            label='Guardar Usuario'
+            label='Cancelar'
+            type='button'
+            to='/usuarios'
+            disabled={isSubmitting}
+          />
+          <ActionButton
+            label={isSubmitting ? 'Guardando...' : 'Guardar'}
             icon={<SaveIcon />}
             variant='success'
             type='submit'
+            disabled={isSubmitting}
           />
         </div>
-      </form>
+      </Form>
     </div>
   );
 }

@@ -1,27 +1,32 @@
 import React from 'react';
+import { useLoaderData } from 'react-router';
 import Breadcrumbs from '../../components/common/Breadcrumbs';
 import ProductForm from '../../components/Forms/ProductForm';
 
 
 function ProductoEditar() {
+
+  const { producto } = useLoaderData();
+
   const breadcrumbItems = [
     { label: 'Inventario', href: '#' },
     { label: 'Edición de producto' },
   ];
 
-  const initialProduct = {
-    id: '001',
-    nombre: 'Martillo de uña',
-    descripcion:
-      'Martillo de acero forjado con mango de fibra de vidrio ergonómico.',
-    precio: '15.99',
-    marca: 'Truper',
-    proveedor: 'Ferretería Central',
-    stock: '150',
-    minStock: '5',
-    fechaDeVencimiento: '',
-    categoria: 'Herramientas Manuales',
-    unidad: 'Unidad',
+  const initialData = {
+    codigo: producto.codigo,
+    nombre: producto.nombre,
+    descripcion: producto.descripcion || '',
+    precio: producto.precio.toString(),
+    stock: producto.stock.toString(),
+    stockMin: producto.stockMin.toString(),
+    fechaVencimiento: producto.fechaVencimiento
+      ? new Date(producto.fechaVencimiento).toISOString().split('T')[0]
+      : '',
+    idCategoria: producto.categoria?.idCategoria?.toString() || '',
+    idMarca: producto.marca?.idMarca?.toString() || '',
+    idUnidad: producto.productosunidad?.[0]?.idUnidad?.toString() || '',
+    idProveedor: producto.productoproveedor?.[0]?.idProveedor?.toString() || '',
   };
 
   return (
@@ -29,9 +34,7 @@ function ProductoEditar() {
       <Breadcrumbs items={breadcrumbItems} />
       <ProductForm
         mode='edit'
-        initialData={initialProduct}
-        onSubmit={(data) => console.log('Producto editado:', data)}
-        link={'/productos'}
+        initialData={initialData}
       />
     </div>
   );

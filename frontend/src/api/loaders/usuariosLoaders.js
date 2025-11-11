@@ -16,14 +16,21 @@ export const usuariosLoader = async () => {
     }
 }
 // Loader para obtener un usuario específico
-export const usuarioLoader = async ({ params }) => {
+export const usuarioByIdLoader = async ({ params }) => {
     try {
-        return await usuarioService.getById(params.id);
+        const usuarioResponse = await usuarioService.getById(params.usuarioId);
+        return {
+          usuario: usuarioResponse.data || [],
+        };
 
     } catch (error) {
         logger.error('Error al obtener el usuario:', error);
         if (error.response?.status === 404) {
-          throw new Response('Usuario no encontrado.', { status: 404 });
+          return {
+            usuario: [],
+            status: 404,
+            message: error.response.data?.message || 'Usuario no encontrado',
+          };
         }
         throw error;
     }
