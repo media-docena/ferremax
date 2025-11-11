@@ -52,4 +52,16 @@ export const usuarioService = {
             throw error;
         }
     },
+
+    getFormData: async () => {
+        try {
+            const response = await axiosInstance.get(endpoints.roles);
+            return {
+                roles: response.data
+            }
+        } catch (error) {
+            logger.error('Error al obtener form data de usuarios:', error);
+            throw error;
+        }
+    },
 }

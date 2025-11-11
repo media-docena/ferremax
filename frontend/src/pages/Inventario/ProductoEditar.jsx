@@ -12,7 +12,7 @@ function ProductoEditar() {
     { label: 'Inventario', href: '#' },
     { label: 'Edición de producto' },
   ];
-console.log(producto);
+
   const initialData = {
     codigo: producto.codigo,
     nombre: producto.nombre,

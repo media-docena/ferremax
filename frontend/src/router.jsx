@@ -28,7 +28,7 @@ import {
 } from './api/loaders/productosLoaders';
 import { reportesLoader } from './api/loaders/reportesLoaders';
 import { loginAction, logoutAction } from './api/actions/authActions';
-import { changeUsuarioStatusAction } from './api/actions/usuariosActions';
+import { changeUsuarioStatusAction, createUsuarioAction, updateUsuarioAction } from './api/actions/usuariosActions';
 import {
   changeProductoStatusAction,
   updateProductoAction,
@@ -82,7 +82,7 @@ const router = createBrowserRouter([
         middleware: [roleMiddleware(['admin'])],
         children: [
           { index: true, loader: usuariosLoader, Component: UsuariosList },
-          { path: 'crear', Component: UsuarioCrear },
+          { path: 'crear', action: createUsuarioAction, Component: UsuarioCrear },
           {
             path: ':usuarioId',
             children: [
@@ -92,7 +92,7 @@ const router = createBrowserRouter([
                 loader: usuarioByIdLoader,
                 Component: UsuarioDetalle,
               },
-              { path: 'editar', Component: UsuarioEditar },
+              { path: 'editar', loader: usuarioByIdLoader, action: updateUsuarioAction, Component: UsuarioEditar },
               { path: 'estado', action: changeUsuarioStatusAction },
             ],
           },
