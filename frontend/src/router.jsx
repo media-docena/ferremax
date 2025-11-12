@@ -34,6 +34,7 @@ import {
   updateProductoAction,
   createProductoAction,
 } from './api/actions/productosActions';
+import { docLoader } from './api/loaders/docLoader';
 
 const router = createBrowserRouter([
   // Rutas públicas
@@ -114,6 +115,7 @@ const router = createBrowserRouter([
       {
         path: 'documentacion',
         middleware: [roleMiddleware(['admin'])],
+        loader: docLoader,
         Component: Documentacion,
       },
       {
