@@ -34,6 +34,7 @@ import {
   updateProductoAction,
   createProductoAction,
 } from './api/actions/productosActions';
+import { docLoader } from './api/loaders/docLoader';
 
 const router = createBrowserRouter([
   // Rutas públicas
@@ -56,7 +57,12 @@ const router = createBrowserRouter([
         path: 'productos',
         children: [
           { index: true, loader: productosLoader, Component: ProductosList },
-          { path: 'crear', action: createProductoAction, Component: ProductoCrear },
+          {
+            path: 'crear',
+            middleware: [roleMiddleware(['admin', 'encargado'])],
+            action: createProductoAction,
+            Component: ProductoCrear,
+          },
           {
             path: ':productoId',
             children: [
@@ -68,11 +74,16 @@ const router = createBrowserRouter([
               },
               {
                 path: 'editar',
+                middleware: [roleMiddleware(['admin', 'encargado'])],
                 loader: productoByIdLoader,
                 action: updateProductoAction,
                 Component: ProductoEditar,
               },
-              { path: 'estado', action: changeProductoStatusAction },
+              {
+                path: 'estado',
+                middleware: [roleMiddleware(['admin', 'encargado'])],
+                action: changeProductoStatusAction,
+              },
             ],
           },
         ],
@@ -82,7 +93,11 @@ const router = createBrowserRouter([
         middleware: [roleMiddleware(['admin'])],
         children: [
           { index: true, loader: usuariosLoader, Component: UsuariosList },
-          { path: 'crear', action: createUsuarioAction, Component: UsuarioCrear },
+          {
+            path: 'crear',
+            action: createUsuarioAction,
+            Component: UsuarioCrear,
+          },
           {
             path: ':usuarioId',
             children: [
@@ -92,7 +107,12 @@ const router = createBrowserRouter([
                 loader: usuarioByIdLoader,
                 Component: UsuarioDetalle,
               },
-              { path: 'editar', loader: usuarioByIdLoader, action: updateUsuarioAction, Component: UsuarioEditar },
+              {
+                path: 'editar',
+                loader: usuarioByIdLoader,
+                action: updateUsuarioAction,
+                Component: UsuarioEditar,
+              },
               { path: 'estado', action: changeUsuarioStatusAction },
             ],
           },
@@ -114,6 +134,7 @@ const router = createBrowserRouter([
       {
         path: 'documentacion',
         middleware: [roleMiddleware(['admin'])],
+        loader: docLoader,
         Component: Documentacion,
       },
       {

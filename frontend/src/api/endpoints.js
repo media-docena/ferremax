@@ -31,4 +31,7 @@ export const endpoints = {
 
   // Roles
   roles: '/roles',
+
+  // Documentación
+  documentacion: '/documentacion'
 };

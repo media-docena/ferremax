@@ -25,6 +25,9 @@ v1Router.use('/auth', authRouter);
 // Documentación de Swagger
 v1Router.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc, swaggerOptions))
 
+// Ruta de swagger para renderizar desde el frontend
+v1Router.get('/documentacion', (req, res) => res.json(swaggerDoc));
+
 // Middleware de validación de token
 v1Router.use(verifyToken);
 
