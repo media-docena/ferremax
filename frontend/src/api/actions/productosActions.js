@@ -3,10 +3,16 @@ import { productoService } from '../services/productoService';
 import { createProductoSchema, updateProductoSchema } from '../../schemas/productoSchema';
 import { formatErrors } from '../../helpers/utils';
 import { filtrarProductoData } from '../../helpers/productsHelper';
+import { requireRole } from '../../helpers/authHelper'
+import { userContext } from '../../contexts/context';
 import logger from '../../../config/logger';
 
-export const changeProductoStatusAction = async ({ request, params }) => {
+export const changeProductoStatusAction = async ({ request, params, context }) => {
   try {
+    const user = context.get(userContext);
+    const authError = requireRole(user, ['admin', 'encargado']);
+    if (authError) return authError;
+
     const formData = await request.formData();
     const nuevoEstado = formData.get('estado');
 
@@ -29,7 +35,11 @@ export const changeProductoStatusAction = async ({ request, params }) => {
   }
 };
 
-export const createProductoAction = async ({ request }) => {
+export const createProductoAction = async ({ request, context }) => {
+  const user = context.get(userContext);
+  const authError = requireRole(user, ['admin', 'encargado']);
+  if (authError) return authError;
+
   const formData = await request.formData();
   const rawData = Object.fromEntries(formData);
   
@@ -77,7 +87,11 @@ export const createProductoAction = async ({ request }) => {
   }
 }
 
-export const updateProductoAction = async ({ request, params }) => {
+export const updateProductoAction = async ({ request, params, context }) => {
+  const user = context.get(userContext);
+  const authError = requireRole(user, ['admin', 'encargado']);
+  if (authError) return authError;
+  
   const formData = await request.formData();
   const rawData = Object.fromEntries(formData);
   

@@ -233,28 +233,31 @@ function UserForm({ initialData = {}, mode = 'create' }) {
 
         {/* Row 4: DNI, Rol, y Estado */}
         <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-6'>
-          <div>
-            <label
-              htmlFor='dni'
-              className='block text-sm font-medium text-gray-500 mb-2'
-            >
-              DNI <span className='text-red-500'>*</span>
-            </label>
-            <input
-              id='dni'
-              type='text'
-              name='dni'
-              placeholder='Ej. 12345678'
-              defaultValue={formData.dni || ''}
-              className={`w-full px-4 py-2 font-roboto border rounded-md bg-gray-50
+          {/* DNI Solo renderiza en modo creación */}
+          {mode === 'create' && (
+            <div>
+              <label
+                htmlFor='dni'
+                className='block text-sm font-medium text-gray-500 mb-2'
+              >
+                DNI <span className='text-red-500'>*</span>
+              </label>
+              <input
+                id='dni'
+                type='text'
+                name='dni'
+                placeholder='Ej. 12345678'
+                defaultValue={formData.dni || ''}
+                className={`w-full px-4 py-2 font-roboto border rounded-md bg-gray-50
                          placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400
                          ${errors.dni ? 'border-red-500' : 'border-gray-200'}`}
-              required
-            />
-            {errors.dni && (
-              <p className='mt-1 text-sm text-red-600'>{errors.dni[0]}</p>
-            )}
-          </div>
+                required
+              />
+              {errors.dni && (
+                <p className='mt-1 text-sm text-red-600'>{errors.dni[0]}</p>
+              )}
+            </div>
+          )}
           <div>
             <label
               htmlFor='idRol'

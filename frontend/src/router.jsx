@@ -59,7 +59,6 @@ const router = createBrowserRouter([
           { index: true, loader: productosLoader, Component: ProductosList },
           {
             path: 'crear',
-            middleware: [roleMiddleware(['admin', 'encargado'])],
             action: createProductoAction,
             Component: ProductoCrear,
           },
@@ -74,14 +73,12 @@ const router = createBrowserRouter([
               },
               {
                 path: 'editar',
-                middleware: [roleMiddleware(['admin', 'encargado'])],
                 loader: productoByIdLoader,
                 action: updateProductoAction,
                 Component: ProductoEditar,
               },
               {
                 path: 'estado',
-                middleware: [roleMiddleware(['admin', 'encargado'])],
                 action: changeProductoStatusAction,
               },
             ],
