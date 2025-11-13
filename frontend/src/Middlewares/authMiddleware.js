@@ -34,6 +34,6 @@ export function roleMiddleware(allowedRoles = []) {
       });
     }
 
-    return;
+    return null;
   };
 }
