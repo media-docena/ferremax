@@ -1,8 +1,15 @@
 import React, {useState} from 'react';
 import ActionButton from '../../components/common/Buttons/ActionButton';
 import TaskAltIcon from  '../../assets/icons/task_alt.svg';
+import { useNavigate } from 'react-router';
 
-const ModalVenta = ({ onClose, total }) => {
+const ModalVenta = ({ onClose, venta }) => {
+
+    const navigate = useNavigate();
+
+    const idVenta = venta?.idVenta || 'N/A';
+    const metodoPago = venta?.formapago?.descripcion || 'N/A';
+    const totalVenta = venta?.totalVenta || 0;
 
     return (
         <div className='fixed inset-0 bg-gray-800/40 backdrop-blur-sm flex items-center justify-center z-50'>
@@ -17,22 +24,24 @@ const ModalVenta = ({ onClose, total }) => {
                 <div className='border-1 rounded-sm w-75 h-24'>
                     <div className='flex justify-between p-1 text-gray-700 text-[15px] font-semibold border-b'>
                         <label>ID Venta:</label>
-                        <label> 150 </label>
+                        <label> #{idVenta} </label>
                     </div>
                     <div className='flex justify-between p-1 text-gray-700 text-[15px] font-semibold border-b'>
                         <label>Metodo de Pago:</label>
-                        <label>Efectivo</label>
+                        <label>{metodoPago}</label>
                     </div>
                     <div className='flex justify-between p-1 text-gray-700 text-[15px] font-semibold'>
                         <label>Total Abonado</label>
-                        <label>99.19</label>
+                        <label>${Number(totalVenta).toFixed(2)}</label>
                     </div>
                     <div className='pt-10'>
                         <ActionButton
                             label='Ver Factura'
                             variant='addValid'
-                            to='/ventas/factura'
-                            onClick={() => console.log('Ver Factura')}
+                            onClick={() => {
+                                onClose();
+                                navigate(`/ventas/factura/${idVenta}`);
+                            }}
                         />
                     </div>
                 </div>

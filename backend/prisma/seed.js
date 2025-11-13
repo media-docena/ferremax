@@ -90,7 +90,7 @@ async function main() {
       data: {
         correo: 'alberto@ferremax.com',
         password:
-          '$2a$10$xGqX8qF5Z1J2K3L4M5N6O7P8Q9R0S1T2U3V4W5X6Y7Z8A9B0C1D2E3', // 123456 hasheado
+          '$2b$10$UPjj.jr6wIlGFjJhdcrJ6ummLzL6.GO3v2qg7zX68vhsImZ5l4BE.', // 123456 hasheado
         idEmpleado: empleados[0].idEmpleado,
         estado: 'activo',
       },

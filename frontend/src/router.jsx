@@ -27,6 +27,8 @@ import {
   productoByIdLoader,
 } from './api/loaders/productosLoaders';
 import { reportesLoader } from './api/loaders/reportesLoaders';
+import { productosDisponiblesLoader } from './api/loaders/carritoVentaLoaders';
+import { ventaByIdLoader } from './api/loaders/carritoVentaLoaders';
 import { loginAction, logoutAction } from './api/actions/authActions';
 import { changeUsuarioStatusAction } from './api/actions/usuariosActions';
 import {
@@ -101,8 +103,12 @@ const router = createBrowserRouter([
       {
         path: 'ventas',
         children: [
-          { index: true, Component: VentasList },
-          { path: 'factura', Component: VentasFactura },
+          { 
+            index: true, 
+            loader: productosDisponiblesLoader,
+            Component: VentasList 
+          },
+          { path: 'factura/:idVenta', loader: ventaByIdLoader, Component: VentasFactura },
         ],
       },
       {

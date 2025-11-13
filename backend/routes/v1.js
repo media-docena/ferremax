@@ -9,6 +9,7 @@ import categoriasRouter from './categorias_routes.js'
 import marcasRouter from './marcas_routes.js'
 import rolesRouter from './roles_routes.js'
 import unidadesRouter from './unidades_routes.js'
+import carritoVentaRouter from './carrito_venta_routes.js'
 import { verifyToken } from '../middlewares/auth_middlewares.js';
 import swaggerUI from 'swagger-ui-express';
 import { swaggerOptions } from '../swagger/swagger.js';
@@ -37,5 +38,6 @@ v1Router.use('/categorias', categoriasRouter);
 v1Router.use('/marcas', marcasRouter);
 v1Router.use('/roles', rolesRouter);
 v1Router.use('/unidades', unidadesRouter);
+v1Router.use('/carritoVenta', carritoVentaRouter);
 
 export default v1Router;

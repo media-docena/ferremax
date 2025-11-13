@@ -4,8 +4,10 @@ import ActionButton from '../../components/common/Buttons/ActionButton';
 
 const ModalPago = ({ total, onClose, onOpen }) => {
     const paymentMethods = [
-        { id: 'efectivo', label: 'Efectivo' },
-        { id: 'tarjeta', label: 'Tarjeta de Crédito' },
+        { id: 1, label: 'Efectivo' },
+        { id: 2, label: 'Tarjeta de Crédito' },
+        { id: 3, label: 'Transferencia Bancaria' },
+        { id: 4, label: 'Tarjeta de Débito' },
     ];
 
     const [paymentMethod, setPaymentMethod] = useState(paymentMethods[0].id)
@@ -46,9 +48,8 @@ const ModalPago = ({ total, onClose, onOpen }) => {
                         <ActionButton
                             label='Confirmar Venta'
                             variant='continuePayment'
-                            onClick={onOpen}
+                            onClick={() => onOpen(Number(paymentMethod))}
                         />
-
                     </div>
                 </div>
             </div>
