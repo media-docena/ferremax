@@ -18,7 +18,7 @@ function VentasList() {
     { label: 'Carrito de Compras' },
   ]
 
-  const { productos: products = [] } = useLoaderData();
+  const { productos: products = [], formaPago = [] } = useLoaderData();
 
   const { 
     carrito, 
@@ -230,6 +230,7 @@ function VentasList() {
               {showModalPago && (
                 <ModalPago 
                   total={calcularTotal()}
+                  formaPago={formaPago}
                   onClose={handleCloseModalPago}
                   onOpen={async (idFormaPago) => {
                     const venta = await handleProcesarVenta(idFormaPago);

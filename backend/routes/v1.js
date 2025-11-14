@@ -38,6 +38,6 @@ v1Router.use('/categorias', categoriasRouter);
 v1Router.use('/marcas', marcasRouter);
 v1Router.use('/roles', rolesRouter);
 v1Router.use('/unidades', unidadesRouter);
-v1Router.use('/carritoVenta', carritoVentaRouter);
+v1Router.use('/carritoventa', carritoVentaRouter);
 
 export default v1Router;
