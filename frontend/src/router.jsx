@@ -35,6 +35,7 @@ import {
   createProductoAction,
 } from './api/actions/productosActions';
 import { docLoader } from './api/loaders/docLoader';
+import { productosDisponiblesLoader, ventaByIdLoader } from './api/loaders/carritoVentaLoaders';
 
 const router = createBrowserRouter([
   // Rutas públicas
@@ -118,8 +119,12 @@ const router = createBrowserRouter([
       {
         path: 'ventas',
         children: [
-          { index: true, Component: VentasList },
-          { path: 'factura', Component: VentasFactura },
+          { 
+            index: true, 
+            loader: productosDisponiblesLoader,
+            Component: VentasList 
+          },
+          { path: 'factura/:idVenta', loader: ventaByIdLoader, Component: VentasFactura },
         ],
       },
       {

@@ -33,5 +33,9 @@ export const endpoints = {
   roles: '/roles',
 
   // Documentación
-  documentacion: '/documentacion'
+  documentacion: '/documentacion',
+
+  // Carrito de Venta
+  carritoVenta: '/carritoventa',
+  carritoVentaById: (id) => `/carritoventa/${id}`,
 };
