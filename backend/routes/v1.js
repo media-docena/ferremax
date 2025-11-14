@@ -13,6 +13,7 @@ import { verifyToken } from '../middlewares/auth_middlewares.js';
 import swaggerUI from 'swagger-ui-express';
 import { swaggerOptions } from '../swagger/swagger.js';
 import swaggerDoc from '../swagger/openapi.json' with { type: 'json' };
+import carritoVentaRouter from './carrito_venta_routes.js';
 
 const v1Router = Router();
 
@@ -24,6 +25,9 @@ v1Router.use('/auth', authRouter);
 
 // Documentación de Swagger
 v1Router.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc, swaggerOptions))
+
+// Ruta de swagger para renderizar desde el frontend
+v1Router.get('/documentacion', (req, res) => res.json(swaggerDoc));
 
 // Middleware de validación de token
 v1Router.use(verifyToken);
@@ -37,5 +41,6 @@ v1Router.use('/categorias', categoriasRouter);
 v1Router.use('/marcas', marcasRouter);
 v1Router.use('/roles', rolesRouter);
 v1Router.use('/unidades', unidadesRouter);
+v1Router.use('/carritoventa', carritoVentaRouter);
 
 export default v1Router;

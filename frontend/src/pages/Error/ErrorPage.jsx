@@ -60,7 +60,6 @@ export default function ErrorPage() {
     <div className='min-h-screen bg-gray-100 flex items-center justify-center p-4 md:p-12 relative overflow-hidden'>
       <div className='relative z-10 max-w-md md:max-w-3xl lg:max-w-4xl w-full'>
         <div className='bg-white rounded-xl shadow-2xl p-8 md:p-16 lg:p-20'>
-
           {/* Icono de error */}
           <ErrorIcon className='w-20 h-20 md:w-30 md:h-30 lg:w-24 lg:h-24 text-yellow-500 mx-auto mb-6' />
           {/* Status code */}
@@ -92,19 +91,18 @@ export default function ErrorPage() {
 
           {/* Botones de acción*/}
           <div className='flex flex-col gap-3 md:flex-row md:justify-center md:gap-4'>
-            
             <ActionButton
               label='Volver atrás'
               icon={<GoBackIcon className='w-5 h-5' />}
-              variant='warning' 
+              variant='warning'
               onClick={handleGoBack}
-              className='w-full md:w-auto flex-1 whitespace-nowrap' 
+              className='w-full md:w-auto flex-1 whitespace-nowrap'
             />
 
             <ActionButton
               label='Ir al inicio'
               icon={<HomeIcon className='w-5 h-5' />}
-              variant='success' 
+              variant='success'
               to='/'
               className='w-full md:w-auto flex-1 whitespace-nowrap'
             />
@@ -112,20 +110,22 @@ export default function ErrorPage() {
             <ActionButton
               label='Ver productos'
               icon={<ProductsIcon className='w-5 h-5' />}
-              variant='info' 
+              variant='info'
               to='/productos'
               className='w-full md:w-auto flex-1 whitespace-nowrap'
             />
           </div>
 
           {status !== 404 && (
-            <ActionButton
-              label='Cerrar sesión'
-              icon={<LogoutIcon className='w-5 h-5' />}
-              variant='danger' 
-              onClick={handleLogout}
-              className='mt-3 md:mt-4 md:w-auto md:mx-auto'
-            />
+            <div className='flex justify-center mt-3 md:mt-4'>
+              <ActionButton
+                label='Cerrar sesión'
+                icon={<LogoutIcon className='w-5 h-5' />}
+                variant='danger'
+                onClick={handleLogout}
+                className='w-full md:w-auto'
+              />
+            </div>
           )}
 
           {/* Footer informativo */}
