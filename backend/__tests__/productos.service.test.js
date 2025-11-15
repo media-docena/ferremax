@@ -7,7 +7,6 @@ import logger from '../config/logger.js';
 //SIMULACIÓN DE DEPENDENCIAS
 
 // Se simulan las dependencias externas (Prisma, Logger) para evitar efectos secundarios (llamadas a BD, logs en consola).
-
 // Se mockea el cliente de Prisma.
 // Se reemplaza cada función de 'prisma.producto' con un mock de Jest.
 
@@ -38,7 +37,7 @@ jest.mock('../config/logger.js', () => ({
 
 // TESTS UNITARIOS para productosService
 
-describe('productosService (Pruebas Unitarias)', () => {
+describe('productosService: Pruebas Unitarias', () => {
   // Se limpian los mocks después de cada prueba para que el conteo de llamadas de un test no afecte al siguiente.
   afterEach(() => {
     jest.resetAllMocks(); 
@@ -54,7 +53,7 @@ describe('productosService (Pruebas Unitarias)', () => {
       marca: true,
     };
 
-    // Test 1: Se verifica la transformación de datos y la llamada correcta a Prisma.
+    // Test 1: Happy path-> Se verifica la transformación de datos y la llamada correcta a Prisma.
     test('Happy Path: debe crear un producto y transformar los datos de relaciones correctamente', async () => {
       // Se definen los datos de entrada (simula el body del controlador).
       const inputData = {
@@ -92,14 +91,14 @@ describe('productosService (Pruebas Unitarias)', () => {
       // Se simula la respuesta de la BD.
       const mockProductoCreado = {
         idProducto: 1,
-        ...expectedPrismaData, // Usa el objeto de arriba
+        ...expectedPrismaData,
         fechaCreacion: new Date(),
       };
 
       // Se configura el mock de Prisma para devolver el objeto simulado.
       prisma.producto.create.mockResolvedValue(mockProductoCreado);
 
-      // Se llama a la función "create" del servicio
+      // Se llama a la función 'create' del servicio
       const resultado = await productosService.create(inputData);
 
       // Se verifica que 'prisma.producto.create' fue llamado 1 vez.
@@ -115,7 +114,7 @@ describe('productosService (Pruebas Unitarias)', () => {
       expect(resultado).toEqual(mockProductoCreado);
     });
 
-    // Test 2: Fallo de BD. Se verifica el manejo de errores (bloque try...catch).
+    // Test 2: Corner case -> Fallo de BD. Se verifica el manejo de errores (bloque try...catch).
     test('Corner Case: debe lanzar un ApiError si prisma.producto.create falla', async () => {
       // Se definen datos de entrada.
       const inputData = {
@@ -153,7 +152,7 @@ describe('productosService (Pruebas Unitarias)', () => {
   
   // TEST DE LA FUNCIÓN: findAll()
   describe('findAll', () => {
-    // Test 1: Prueba que el listado de productos funciona correctamente.
+    // Test 1: Happy path-> Prueba que el listado de productos funciona correctamente.
     test('Happy Path: debe devolver una lista de productos', async () => {
       // Se simula la respuesta de la BD (un array de productos).
       const mockListaProductos = [
@@ -200,7 +199,7 @@ describe('productosService (Pruebas Unitarias)', () => {
       });
     });
 
-    // Test 2: Prueba cuando el producto no existe (devuelve null).
+    // Test 2: Corner case -> Prueba cuando el producto no existe (devuelve null).
     test('Corner Case: debe devolver null si el producto no existe', async () => {
       const idProducto = 99; // ID simulado que no existe.
       // Se configura el mock para que devuelva null.
@@ -212,7 +211,7 @@ describe('productosService (Pruebas Unitarias)', () => {
       expect(resultado).toBeNull();
     });
 
-    // Test 3: prueba el manejo de errores de la base de datos.
+    // Test 3: Corner case -> prueba el manejo de errores de la base de datos.
     test('Corner Case: debe lanzar un ApiError si la base de datos falla', async () => {
       const idProducto = 1;
       const errorDeBD = new Error('Error de BD simulado');
@@ -232,6 +231,8 @@ describe('productosService (Pruebas Unitarias)', () => {
     });
   });
 
+  // TEST DE LA FUNCIÓN update()
+
   describe('update', () => {
     // Se define el objeto 'include' que el servicio usa en sus respuestas.
     const includeRelations = {
@@ -241,7 +242,7 @@ describe('productosService (Pruebas Unitarias)', () => {
       marca: true,
     };
 
-    // Test 1: prueba la actualización de datos y la transformación correcta.
+    // Test 1: happy path -> prueba la actualización de datos y la transformación correcta.
     test('Happy Path: debe actualizar un producto y transformar los datos', async () => {
       const idProducto = 1;
       // Se definen los datos de entrada.
@@ -292,9 +293,9 @@ describe('productosService (Pruebas Unitarias)', () => {
       expect(resultado).toEqual(mockProductoActualizado);
     });
 
-    // Test 2: Prueba el manejo de errores genéricos de la base de datos.
+    // Test 2: corner case -> prueba el manejo de errores genéricos de la base de datos.
     // Se verifica el manejo de errores específicos de Prisma (P2025).
-    test('Corner Case: debe lanzar ApiError.notFound si el producto no existe (P2025)', async () => {
+    test('Corner Case: debe lanzar ApiError.notFound si el producto no existe', async () => {
       const idProducto = 99;
       const inputData = { nombre: 'Intento de Update' };
 
@@ -317,7 +318,7 @@ describe('productosService (Pruebas Unitarias)', () => {
       }
     });
 
-    // Test 3: prueba el manejo de errores específicos de Prisma (P2003).
+    // Test 3: corner case -> prueba el manejo de errores específicos de Prisma.
     test('Corner Case: debe lanzar ApiError.notFound si la clave foránea falla (P2003)', async () => {
       const idProducto = 1;
       const inputData = { nombre: 'Update con mal ID', idProveedor: 999 };
@@ -345,7 +346,7 @@ describe('productosService (Pruebas Unitarias)', () => {
 
   // TEST DE LA FUNCIÓN: changeStatus()
   describe('changeStatus', () => {
-    // Test 1: prueba la actualización del estado de un producto.
+    // Test 1: happy path -> prueba la actualización del estado de un producto.
     test('Happy Path: debe actualizar solo el estado de un producto', async () => {
       const idProducto = 1;
       const nuevoEstado = 'INACTIVO';
@@ -375,8 +376,8 @@ describe('productosService (Pruebas Unitarias)', () => {
       });
     });
 
-    // Test 2: prueba el manejo de errores específicos de Prisma (P2025).
-    test('Corner Case: debe lanzar ApiError.notFound si el producto no existe (P2025)', async () => {
+    // Test 2: corner case-> prueba el manejo de errores específicos de Prisma.
+    test('Corner Case: debe lanzar ApiError.notFound si el producto no existe', async () => {
       const idProducto = 99;
       // Se simula un error P2025 de Prisma.
       const errorP2025 = new Error('Registro no encontrado');
@@ -398,7 +399,7 @@ describe('productosService (Pruebas Unitarias)', () => {
 
   // TEST DE LA FUNCIÓN: findByCode()
   describe('findByCode', () => {
-    // Test 1: prueba que un producto se obtiene correctamente por código.
+    // Test 1: happy path-> prueba que un producto se obtiene correctamente por código.
     test('Happy Path: debe devolver un producto por su código', async () => {
 
       const codigo = 'A123';
@@ -417,7 +418,7 @@ describe('productosService (Pruebas Unitarias)', () => {
       });
     });
 
-    // Test 2: prueba el manejo de errores genéricos de la base de datos.
+    // Test 2: corner case-> prueba el manejo de errores genéricos de la base de datos.
     test('Corner Case: debe lanzar un ApiError si la base de datos falla', async () => {
       const codigo = 'A123';
       const errorDeBD = new Error('Error de BD simulado');
