@@ -19,6 +19,13 @@ export const reportesLoader = async ({ request }) => {
 
     } catch (error) {
         logger.error('Error al obtener listado de ventas:', error);
+        if (error.response?.status === 404) {
+          return {
+            usuario: [],
+            status: 404,
+            message: error.response.data?.message || 'Reportes de ventas no encontrado',
+          };
+        }
         throw error;
     }
 
