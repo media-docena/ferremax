@@ -10,6 +10,8 @@ import v1Router from './routes/v1.js';
 
 
 const app = express();
+// Deshabilitar la cabecera 'X-Powered-By' por seguridad
+app.disable('x-powered-by');
 
 // Middlewares
 app.use(cors());
