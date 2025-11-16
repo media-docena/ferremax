@@ -906,6 +906,133 @@
           }
         }
       }
+    },
+    "/carrito": {
+      "get": {
+        "tags": ["Carrito/Venta"],
+        "summary": "Get available products for cart",
+        "description": "Returns a list of active products with stock greater than 0, with optional filtering by search term (code, name, or category).",
+        "operationId": "getProductosDisponibles",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "description": "Filter products by code, name or category",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProductoDisponible"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error retrieving available products"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Carrito/Venta"],
+        "summary": "Create a new sale",
+        "description": "Creates a new sale, verifies product existence, validates data, checks sufficient stock and updates inventory.",
+        "operationId": "createVenta",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Sale object to be created",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VentaCrear"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Sale created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VentaCompleta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid data - Missing products, invalid product data, non-existent products, insufficient stock, or invalid employee/payment method"
+          },
+          "422": {
+            "description": "Validation error - Invalid input format"
+          },
+          "500": {
+            "description": "Error creating the sale"
+          }
+        }
+      }
+    },
+    "/carrito/{id}": {
+      "get": {
+        "tags": ["Carrito/Venta"],
+        "summary": "Get sale by ID",
+        "description": "Returns a complete sale with all its details for invoice generation.",
+        "operationId": "getVentaById",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the sale to retrieve",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VentaCompleta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid sale ID or sale not found"
+          },
+          "500": {
+            "description": "Error retrieving the sale"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1247,6 +1374,192 @@
           "cantidadVendida": {
             "type": "integer",
             "example": 50
+          }
+        }
+      },
+      "ProductoDisponible": {
+        "type": "object",
+        "properties": {
+          "idProducto": {
+            "type": "integer",
+            "example": 1
+          },
+          "codigo": {
+            "type": "string",
+            "example": "MART001"
+          },
+          "nombre": {
+            "type": "string",
+            "example": "Martillo"
+          },
+          "precio": {
+            "type": "number",
+            "format": "float",
+            "example": 15.99
+          },
+          "stock": {
+            "type": "integer",
+            "example": 100
+          },
+          "estado": {
+            "type": "string",
+            "example": "activo"
+          },
+          "categoria": {
+            "$ref": "#/components/schemas/Categoria"
+          }
+        }
+      },
+      "VentaCrear": {
+        "type": "object",
+        "properties": {
+          "idEmpleado": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 1
+          },
+          "idFormaPago": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 1
+          },
+          "productos": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/ProductoVenta"
+            }
+          }
+        },
+        "required": ["idEmpleado", "idFormaPago", "productos"]
+      },
+      "ProductoVenta": {
+        "type": "object",
+        "properties": {
+          "idProducto": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 1
+          },
+          "cantidad": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 2
+          },
+          "precio": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "example": 15.99
+          },
+          "subtotal": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "example": 31.98
+          }
+        },
+        "required": ["idProducto", "cantidad", "precio", "subtotal"]
+      },
+      "VentaCompleta": {
+        "type": "object",
+        "properties": {
+          "idVenta": {
+            "type": "integer",
+            "example": 1
+          },
+          "idEmpleado": {
+            "type": "integer",
+            "example": 1
+          },
+          "idFormaPago": {
+            "type": "integer",
+            "example": 1
+          },
+          "fecha": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-11-14T10:30:00Z"
+          },
+          "hora": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-11-14T10:30:00Z"
+          },
+          "totalVenta": {
+            "type": "number",
+            "format": "float",
+            "example": 150.75
+          },
+          "empleado": {
+            "type": "object",
+            "properties": {
+              "idEmpleado": {
+                "type": "integer",
+                "example": 1
+              },
+              "nombre": {
+                "type": "string",
+                "example": "Juan"
+              },
+              "apellido": {
+                "type": "string",
+                "example": "Pérez"
+              }
+            }
+          },
+          "formapago": {
+            "type": "object",
+            "properties": {
+              "idFormaPago": {
+                "type": "integer",
+                "example": 1
+              },
+              "nombre": {
+                "type": "string",
+                "example": "Efectivo"
+              }
+            }
+          },
+          "detalleventa": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DetalleVenta"
+            }
+          }
+        }
+      },
+      "DetalleVenta": {
+        "type": "object",
+        "properties": {
+          "idDetalleVenta": {
+            "type": "integer",
+            "example": 1
+          },
+          "idVenta": {
+            "type": "integer",
+            "example": 1
+          },
+          "idProducto": {
+            "type": "integer",
+            "example": 1
+          },
+          "cantidad": {
+            "type": "integer",
+            "example": 2
+          },
+          "precio": {
+            "type": "number",
+            "format": "float",
+            "example": 15.99
+          },
+          "subtotal": {
+            "type": "number",
+            "format": "float",
+            "example": 31.98
+          },
+          "producto": {
+            "$ref": "#/components/schemas/Producto"
           }
         }
       }

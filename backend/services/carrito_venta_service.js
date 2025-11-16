@@ -75,7 +75,7 @@ export default {
                 // Actualizamos el stock con un solo UPDATE usando CASE
                 if (productos.length > 0) {
                     // Construir el query dinámicamente
-                    const caseStatements = productos.map((p, index) => 
+                    const caseStatements = productos.map((p) => 
                         Prisma.sql`WHEN idProducto = ${p.idProducto} THEN stock - ${p.cantidad}`
                     );
                     
